@@ -4,14 +4,17 @@ import { DartPad } from "./components/DartPad";
 import { ModeSelector } from "./components/ModeSelector";
 import { VisitHistory } from "./components/VisitHistory";
 import {
+  DEFAULT_MAX_VISITS,
   STORAGE_KEY,
   addDartToSession,
   completeVisitWithDart,
   createInitialSession,
   getAccuracyPercent,
   getAverageScorePerVisit,
+  getSessionVisitLimit,
   getVisitSuccessRate,
   hydrateSession,
+  isSessionComplete,
   saveSession,
   switchMode,
   undoLastDartOrVisit,
@@ -53,17 +56,19 @@ function App() {
   }, [session]);
 
   const mode = gameModes[session.modeId];
-  const currentVisitNumber = mode.fixedVisits
-    ? Math.min(session.visitsPlayed + 1, mode.fixedVisits)
-    : session.visitsPlayed + 1;
+  const visitLimit = getSessionVisitLimit(session);
+  const currentVisitNumber = Math.min(session.visitsPlayed + 1, visitLimit);
   const accuracy = getAccuracyPercent(session);
   const successRate = getVisitSuccessRate(session);
   const averageScore = getAverageScorePerVisit(session);
-  const drillComplete = Boolean(mode.fixedVisits && session.visitsPlayed >= mode.fixedVisits);
-  const goalVisits = mode.fixedVisits ?? 30;
+  const drillComplete = isSessionComplete(session);
+  const goalVisits = mode.fixedVisits ?? DEFAULT_MAX_VISITS;
   const sessionProgressValue = Math.min(session.visitsPlayed, goalVisits);
   const sessionProgress = Math.round((sessionProgressValue / goalVisits) * 100);
   const personalBestBase = Math.max(session.personalBestStreak, 4);
+  const completionMessage = drillComplete
+    ? `You've reached ${goalVisits} visits. Reset to start another block.`
+    : undefined;
 
   const summaryCards = [
     {
@@ -144,7 +149,12 @@ function App() {
         ))}
       </section>
 
-      <DartPad disabled={drillComplete} onSelect={handleDart} onAdvance={handleAdvance} />
+      <DartPad
+        disabled={drillComplete}
+        disabledMessage={completionMessage}
+        onSelect={handleDart}
+        onAdvance={handleAdvance}
+      />
 
       <section className="visit-stage">
         <div className="visit-grid" aria-label="Current visit dart slots">
@@ -162,6 +172,37 @@ function App() {
               </article>
             );
           })}
+        </div>
+      </section>
+
+      <section className="card secondary-panel controls-panel">
+        {drillComplete ? <p className="input-note">{completionMessage}</p> : null}
+
+        <div className="action-row">
+          <button
+            type="button"
+            className="utility-button primary"
+            aria-label="Undo last dart or visit"
+            onClick={handleUndo}
+          >
+            Undo
+          </button>
+          <button
+            type="button"
+            className="utility-button"
+            aria-label="Reset game"
+            onClick={handleResetScore}
+          >
+            {drillComplete ? "Reset to play again" : "Reset"}
+          </button>
+          <button
+            type="button"
+            className="utility-button"
+            aria-label="Start a new session"
+            onClick={handleNewSession}
+          >
+            New session
+          </button>
         </div>
       </section>
 
@@ -185,42 +226,6 @@ function App() {
               {drillComplete ? "Complete" : mode.name}
             </span>
           </div>
-        </div>
-      </section>
-
-      <section className="card secondary-panel controls-panel">
-        <div className="section-heading">
-          <div>
-            <p className="section-label">Controls</p>
-            <h2>Session actions</h2>
-          </div>
-        </div>
-
-        <div className="action-row">
-          <button
-            type="button"
-            className="utility-button primary"
-            aria-label="Undo last dart or visit"
-            onClick={handleUndo}
-          >
-            Undo
-          </button>
-          <button
-            type="button"
-            className="utility-button"
-            aria-label="Reset game"
-            onClick={handleResetScore}
-          >
-            Reset
-          </button>
-          <button
-            type="button"
-            className="utility-button"
-            aria-label="Start a new session"
-            onClick={handleNewSession}
-          >
-            New session
-          </button>
         </div>
       </section>
 
