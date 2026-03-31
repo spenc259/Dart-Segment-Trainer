@@ -24,6 +24,22 @@ import {
 import type { DartResult, GameModeId, SessionStats } from "./types/game";
 import { DEFAULT_TARGET_SEGMENT, formatDartResult, gameModes, targetSegmentOptions } from "./lib/gameModes";
 
+type ThemePreference = "dark" | "light" | "device";
+
+const THEME_STORAGE_KEY = "twenty-lock-theme-v1";
+
+const getStoredThemePreference = (): ThemePreference => {
+  const storedPreference = window.localStorage.getItem(THEME_STORAGE_KEY);
+
+  if (storedPreference === "light" || storedPreference === "device" || storedPreference === "dark") {
+    return storedPreference;
+  }
+
+  return "dark";
+};
+
+const getSystemPrefersDark = () => window.matchMedia("(prefers-color-scheme: dark)").matches;
+
 const getRingStyle = (progress: number, color: string): CSSProperties => {
   const clampedProgress = Math.max(0, Math.min(progress, 100));
   return {
@@ -53,10 +69,34 @@ function App() {
     hydrateSession(window.localStorage.getItem(STORAGE_KEY)),
   );
   const [statsExpanded, setStatsExpanded] = useState(false);
+  const [themePreference, setThemePreference] = useState<ThemePreference>(getStoredThemePreference);
+  const [systemPrefersDark, setSystemPrefersDark] = useState(getSystemPrefersDark);
 
   useEffect(() => {
     saveSession(session);
   }, [session]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (event: MediaQueryListEvent) => {
+      setSystemPrefersDark(event.matches);
+    };
+
+    setSystemPrefersDark(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
+
+  const resolvedTheme = themePreference === "device" ? (systemPrefersDark ? "dark" : "light") : themePreference;
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = resolvedTheme;
+    document.documentElement.style.colorScheme = resolvedTheme;
+    window.localStorage.setItem(THEME_STORAGE_KEY, themePreference);
+  }, [resolvedTheme, themePreference]);
 
   const mode = gameModes[session.modeId];
   const visitLimit = getSessionVisitLimit(session);
@@ -170,6 +210,30 @@ function App() {
             ))}
           </select>
         </label>
+      </section>
+
+      <section className="card secondary-panel theme-panel">
+        <div className="section-heading">
+          <h2>Theme</h2>
+        </div>
+        <div className="theme-switcher" role="group" aria-label="Theme preference">
+          {(["dark", "light", "device"] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              className={`theme-button ${themePreference === option ? "selected" : ""}`}
+              aria-pressed={themePreference === option}
+              onClick={() => setThemePreference(option)}
+            >
+              {option === "device" ? "Device" : option[0].toUpperCase() + option.slice(1)}
+            </button>
+          ))}
+        </div>
+        <p className="progress-support">
+          {themePreference === "device"
+            ? `Using your device preference. Current theme: ${resolvedTheme}.`
+            : `Using the ${resolvedTheme} theme.`}
+        </p>
       </section>
 
       <section className="card summary-bar" aria-label="Live stats">
