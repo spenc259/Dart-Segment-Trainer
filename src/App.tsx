@@ -67,8 +67,11 @@ function App() {
   const sessionProgressValue = Math.min(session.visitsPlayed, goalVisits);
   const sessionProgress = Math.round((sessionProgressValue / goalVisits) * 100);
   const personalBestBase = Math.max(session.personalBestStreak, 4);
+  const endedByMiss = Boolean(mode.endsOnMiss && session.history.some((visit) => visit.darts.includes("MISS")));
   const completionMessage = drillComplete
-    ? `You've reached ${goalVisits} visits. Reset to start another block.`
+    ? endedByMiss
+      ? "A miss ended this endurance block. Reset to start another run."
+      : `You've reached ${goalVisits} visits. Reset to start another block.`
     : undefined;
 
   const summaryCards = [
@@ -279,10 +282,7 @@ function App() {
       <section className="secondary-grid">
         <section className="card secondary-panel session-panel">
           <div className="section-heading">
-            <div>
-              <p className="section-label">Modes</p>
-              <h2>Change drill</h2>
-            </div>
+            <h2>Modes</h2>
           </div>
           <ModeSelector selectedMode={session.modeId} onSelect={handleModeSelect} />
         </section>

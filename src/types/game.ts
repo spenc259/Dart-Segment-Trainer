@@ -8,6 +8,7 @@ export interface GameMode {
   description: string;
   successLabel: string;
   fixedVisits?: number;
+  endsOnMiss?: boolean;
   getQualifyingHits: (darts: DartResult[]) => number;
   isSuccess: (darts: DartResult[]) => boolean;
   isPerfect: (darts: DartResult[]) => boolean;

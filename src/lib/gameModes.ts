@@ -1,7 +1,7 @@
 import type { DartResult, GameMode, GameModeId } from "../types/game";
 
 const twentyHits: DartResult[] = ["S20", "D20", "T20"];
-const strictHits: DartResult[] = ["D20", "T20"];
+const strictHits: DartResult[] = ["S20", "T20"];
 
 const countHits = (darts: DartResult[], allowed: DartResult[]) =>
   darts.filter((dart) => allowed.includes(dart)).length;
@@ -21,8 +21,8 @@ export const gameModes: Record<GameModeId, GameMode> = {
   strict: {
     id: "strict",
     name: "Strict",
-    description: "Only D20 and T20 count. Punishes loose singles.",
-    successLabel: "2x power hits = success, 3x = big bonus",
+    description: "Only singles and trebles count. Doubles are treated as off target.",
+    successLabel: "2x singles or trebles = success, 3x = big bonus",
     getQualifyingHits: (darts) => countHits(darts, strictHits),
     isSuccess: (darts) => countHits(darts, strictHits) >= 2,
     isPerfect: (darts) => countHits(darts, strictHits) === 3,
@@ -39,9 +39,10 @@ export const gameModes: Record<GameModeId, GameMode> = {
   endurance: {
     id: "endurance",
     name: "Endurance",
-    description: "A 12-visit focus block with best streak tracking.",
-    successLabel: "12 visits, stack streaks and finish strong",
-    fixedVisits: 12,
+    description: "A 10-visit focus block where any miss ends the run immediately.",
+    successLabel: "Survive 10 visits without a miss",
+    fixedVisits: 10,
+    endsOnMiss: true,
     getQualifyingHits: (darts) => countHits(darts, twentyHits),
     isSuccess: (darts) => countHits(darts, twentyHits) >= 2,
     isPerfect: (darts) => countHits(darts, twentyHits) === 3,
