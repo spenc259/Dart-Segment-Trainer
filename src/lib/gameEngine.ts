@@ -2,6 +2,7 @@ import { gameModes } from "./gameModes";
 import type { DartResult, GameModeId, ScoredVisit, SessionStats } from "../types/game";
 
 export const STORAGE_KEY = "twenty-lock-session-v1";
+export const DEFAULT_MAX_VISITS = 30;
 
 export const createInitialSession = (modeId: GameModeId = "standard"): SessionStats => ({
   score: 0,
@@ -25,12 +26,23 @@ export const getVisitFeedback = (visit: ScoredVisit) => {
   return "Reset and refocus.";
 };
 
+export const getSessionVisitLimit = (session: SessionStats) => {
+  const mode = gameModes[session.modeId];
+  return mode.fixedVisits ?? DEFAULT_MAX_VISITS;
+};
+
+export const isSessionComplete = (session: SessionStats) => session.visitsPlayed >= getSessionVisitLimit(session);
+
 const getStreakBonus = (streakAfterVisit: number) => {
   if (streakAfterVisit > 0 && streakAfterVisit % 3 === 0) return 1;
   return 0;
 };
 
 export const scoreVisit = (session: SessionStats, darts: DartResult[]): SessionStats => {
+  if (isSessionComplete(session)) {
+    return session;
+  }
+
   const mode = gameModes[session.modeId];
   const qualifyingHits = mode.getQualifyingHits(darts);
   const success = mode.isSuccess(darts);
@@ -72,6 +84,10 @@ export const scoreVisit = (session: SessionStats, darts: DartResult[]): SessionS
 };
 
 export const addDartToSession = (session: SessionStats, dart: DartResult): SessionStats => {
+  if (isSessionComplete(session)) {
+    return session;
+  }
+
   const nextVisit = [...session.currentVisit, dart];
   if (nextVisit.length < 3) {
     return {
@@ -84,6 +100,10 @@ export const addDartToSession = (session: SessionStats, dart: DartResult): Sessi
 };
 
 export const completeVisitWithDart = (session: SessionStats, dart: DartResult): SessionStats => {
+  if (isSessionComplete(session)) {
+    return session;
+  }
+
   const remainingDarts = Math.max(0, 3 - session.currentVisit.length);
 
   if (remainingDarts === 0) {
