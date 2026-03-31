@@ -1,6 +1,7 @@
 import type { CSSProperties, ChangeEvent } from "react";
 import { useEffect, useState } from "react";
 import { DartPad } from "./components/DartPad";
+import { DartboardOutline } from "./components/DartboardOutline";
 import { ModeSelector } from "./components/ModeSelector";
 import { VisitHistory } from "./components/VisitHistory";
 import {
@@ -324,6 +325,16 @@ function App() {
           />
         </section>
       </section>
+
+      <footer className="card board-footer">
+        <div className="board-footer-copy">
+          <h2>Board Picture</h2>
+          <p className="progress-support">
+            Keep your eyes on {session.targetSegment}, settle into the lane, and let each visit repeat the same picture.
+          </p>
+        </div>
+        <DartboardOutline targetSegment={session.targetSegment} />
+      </footer>
     </main>
   );
 }

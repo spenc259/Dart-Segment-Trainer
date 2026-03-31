@@ -139,6 +139,53 @@ button {
   align-items: center;
 }
 
+.board-footer {
+  display: grid;
+  gap: 1rem;
+}
+
+.board-footer-copy {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.board-footer-copy h2 {
+  margin: 0;
+  color: var(--ink);
+}
+
+.dartboard-outline {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  color: var(--ink-soft);
+}
+
+.dartboard-ring,
+.dartboard-spoke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+
+.dartboard-highlight {
+  fill: rgba(44, 125, 240, 0.08);
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+
+.dartboard-label {
+  fill: currentColor;
+  font-size: 10px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.dartboard-label.is-target {
+  fill: var(--blue);
+}
+
 .progress-card-large {
   padding: 1.15rem;
 }
@@ -632,12 +679,18 @@ button {
   }
 
   .intro-panel,
-  .progress-card-large {
+  .progress-card-large,
+  .board-footer {
     grid-column: span 2;
   }
 
   .secondary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-column: span 2;
+  }
+
+  .board-footer {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    align-items: center;
   }
 }
