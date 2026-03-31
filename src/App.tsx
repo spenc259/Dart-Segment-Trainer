@@ -9,7 +9,6 @@ import {
   createInitialSession,
   getAccuracyPercent,
   getAverageScorePerVisit,
-  getVisitFeedback,
   getVisitSuccessRate,
   hydrateSession,
   saveSession,
@@ -24,13 +23,6 @@ const getRingStyle = (progress: number, color: string): CSSProperties => {
   return {
     background: `conic-gradient(${color} 0deg ${clampedProgress * 3.6}deg, rgba(173, 183, 194, 0.28) ${clampedProgress * 3.6}deg 360deg)`,
   };
-};
-
-const getStatusMessage = (session: SessionStats) => {
-  const latestVisit = session.history[0];
-  if (latestVisit) return getVisitFeedback(latestVisit);
-  if (session.currentVisit.length > 0) return "Stay with the line. Finish the visit.";
-  return "Three darts. Find the 20 bed and stack good visits.";
 };
 
 const getVisitRingMeta = (dart?: DartResult) => {
@@ -63,11 +55,9 @@ function App() {
   const currentVisitNumber = mode.fixedVisits
     ? Math.min(session.visitsPlayed + 1, mode.fixedVisits)
     : session.visitsPlayed + 1;
-  const statusMessage = getStatusMessage(session);
   const accuracy = getAccuracyPercent(session);
   const successRate = getVisitSuccessRate(session);
   const averageScore = getAverageScorePerVisit(session);
-  const visitsRemaining = mode.fixedVisits ? Math.max(mode.fixedVisits - session.visitsPlayed, 0) : null;
   const drillComplete = Boolean(mode.fixedVisits && session.visitsPlayed >= mode.fixedVisits);
   const goalVisits = mode.fixedVisits ?? 30;
   const sessionProgressValue = Math.min(session.visitsPlayed, goalVisits);
@@ -127,17 +117,9 @@ function App() {
 
   return (
     <main className="app-shell">
-      <header className="intro-panel">
+      <header className="intro-panel intro-panel-plain">
         <div className="intro-copy">
-          <p className="product-label">Twenty Lock</p>
-          <h1>Focused 20 training</h1>
-          <p className="intro-description">
-            Visit {currentVisitNumber}
-            {visitsRemaining !== null ? ` of ${mode.fixedVisits}` : ""}. {statusMessage}
-          </p>
-        </div>
-        <div className="intro-mark" aria-hidden="true">
-          20
+          <p className="intro-description intro-description-strong">Find the segment consistently</p>
         </div>
       </header>
 
@@ -157,14 +139,7 @@ function App() {
 
       <DartPad disabled={drillComplete} onSelect={handleDart} />
 
-      <section className="card visit-card">
-        <div className="section-heading">
-          <div>
-            <p className="section-label">Current visit</p>
-            <h2>Three darts</h2>
-          </div>
-        </div>
-
+      <section className="visit-stage">
         <div className="visit-grid" aria-label="Current visit dart slots">
           {[0, 1, 2].map((index) => {
             const dart = session.currentVisit[index];
@@ -172,7 +147,6 @@ function App() {
 
             return (
               <article key={index} className="visit-slot">
-                <p className="visit-slot-label">Dart {index + 1}</p>
                 <div className="progress-ring progress-ring-visit" style={getRingStyle(ringMeta.progress, ringMeta.color)}>
                   <div className="progress-ring-inner">
                     <strong>{dart ?? "--"}</strong>

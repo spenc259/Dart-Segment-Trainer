@@ -49,9 +49,9 @@ export const gameModes: Record<GameModeId, GameMode> = {
 };
 
 export const dartButtons: { value: DartResult; label: string; hint: string }[] = [
-  { value: "S20", label: "S20", hint: "Single 20" },
-  { value: "D20", label: "D20", hint: "Double 20" },
-  { value: "T20", label: "T20", hint: "Treble 20" },
+  { value: "S20", label: "Single", hint: "Single 20" },
+  { value: "D20", label: "Double", hint: "Double 20" },
+  { value: "T20", label: "Treble", hint: "Treble 20" },
   { value: "OTHER", label: "Other", hint: "Any non-20 hit" },
   { value: "MISS", label: "Miss", hint: "Missed board or no score" },
 ];
