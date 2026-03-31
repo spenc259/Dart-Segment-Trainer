@@ -363,7 +363,8 @@ button {
 
 .dart-button,
 .mode-card,
-.utility-button {
+.utility-button,
+.section-toggle {
   border: 0;
   transition:
     transform 150ms ease,
@@ -480,6 +481,16 @@ button {
   border: 1px solid rgba(221, 230, 238, 0.95);
 }
 
+.section-toggle {
+  min-height: 38px;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  background: #f4f8fc;
+  color: var(--ink);
+  font-weight: 700;
+  border: 1px solid rgba(221, 230, 238, 0.95);
+}
+
 .utility-button.primary {
   background: #d7e8fc;
   color: #205fcb;
@@ -572,13 +583,15 @@ button {
 
 .dart-button:hover,
 .mode-card:hover,
-.utility-button:hover {
+.utility-button:hover,
+.section-toggle:hover {
   transform: translateY(-1px);
 }
 
 .dart-button:active,
 .mode-card:active,
-.utility-button:active {
+.utility-button:active,
+.section-toggle:active {
   transform: translateY(1px);
 }
 
