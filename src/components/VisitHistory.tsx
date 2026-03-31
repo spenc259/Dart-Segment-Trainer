@@ -6,12 +6,9 @@ interface VisitHistoryProps {
 
 export function VisitHistory({ history }: VisitHistoryProps) {
   return (
-    <section className="surface secondary-panel history-panel">
+    <section className="card secondary-panel history-panel">
       <div className="section-heading">
-        <div>
-          <p className="section-label">History</p>
-          <h2>Recent visits</h2>
-        </div>
+        <h2>History</h2>
         <span className="history-count">{history.length}</span>
       </div>
       <div className="history-list">
