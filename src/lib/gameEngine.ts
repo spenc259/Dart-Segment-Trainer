@@ -1,10 +1,76 @@
-import { gameModes } from "./gameModes";
+import { DEFAULT_TARGET_SEGMENT, gameModes } from "./gameModes";
 import type { DartResult, GameModeId, ScoredVisit, SessionStats } from "../types/game";
 
 export const STORAGE_KEY = "twenty-lock-session-v1";
 export const DEFAULT_MAX_VISITS = 30;
+const LEGACY_DART_RESULT_MAP: Record<string, DartResult> = {
+  S20: "S",
+  D20: "D",
+  T20: "T",
+  S: "S",
+  D: "D",
+  T: "T",
+  OTHER: "OTHER",
+  MISS: "MISS",
+};
 
-export const createInitialSession = (modeId: GameModeId = "standard"): SessionStats => ({
+const normalizeDartResult = (value: unknown): DartResult | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  return LEGACY_DART_RESULT_MAP[value] ?? null;
+};
+
+const normalizeDartResults = (value: unknown): DartResult[] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.flatMap((dart) => {
+    const normalized = normalizeDartResult(dart);
+    return normalized ? [normalized] : [];
+  });
+};
+
+const normalizeHistory = (value: unknown): ScoredVisit[] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.flatMap((entry) => {
+    if (!entry || typeof entry !== "object") {
+      return [];
+    }
+
+    const visit = entry as Partial<ScoredVisit>;
+    return [
+      {
+        visitNumber: typeof visit.visitNumber === "number" ? visit.visitNumber : 0,
+        darts: normalizeDartResults(visit.darts),
+        qualifyingHits: typeof visit.qualifyingHits === "number" ? visit.qualifyingHits : 0,
+        success: Boolean(visit.success),
+        perfect: Boolean(visit.perfect),
+        pointsEarned: typeof visit.pointsEarned === "number" ? visit.pointsEarned : 0,
+        streakAfterVisit: typeof visit.streakAfterVisit === "number" ? visit.streakAfterVisit : 0,
+        note: typeof visit.note === "string" ? visit.note : "",
+      },
+    ];
+  });
+};
+
+const normalizeTargetSegment = (value: unknown) => {
+  if (typeof value !== "number" || !Number.isInteger(value)) {
+    return DEFAULT_TARGET_SEGMENT;
+  }
+
+  return Math.min(20, Math.max(1, value));
+};
+
+export const createInitialSession = (
+  modeId: GameModeId = "standard",
+  targetSegment = DEFAULT_TARGET_SEGMENT,
+): SessionStats => ({
   score: 0,
   streak: 0,
   bestStreak: 0,
@@ -15,6 +81,7 @@ export const createInitialSession = (modeId: GameModeId = "standard"): SessionSt
   history: [],
   currentVisit: [],
   modeId,
+  targetSegment,
   personalBestStreak: 0,
 });
 
@@ -137,7 +204,7 @@ export const undoLastDartOrVisit = (session: SessionStats): SessionStats => {
   const [lastVisit, ...remainingHistory] = session.history;
   if (!lastVisit) return session;
 
-  const previous = createInitialSession(session.modeId);
+  const previous = createInitialSession(session.modeId, session.targetSegment);
   previous.personalBestStreak = session.personalBestStreak;
 
   const chronological = [...remainingHistory].reverse();
@@ -157,7 +224,14 @@ export const undoLastDartOrVisit = (session: SessionStats): SessionStats => {
 
 export const switchMode = (session: SessionStats, modeId: GameModeId): SessionStats => {
   return {
-    ...createInitialSession(modeId),
+    ...createInitialSession(modeId, session.targetSegment),
+    personalBestStreak: session.personalBestStreak,
+  };
+};
+
+export const switchTargetSegment = (session: SessionStats, targetSegment: number): SessionStats => {
+  return {
+    ...createInitialSession(session.modeId, targetSegment),
     personalBestStreak: session.personalBestStreak,
   };
 };
@@ -168,13 +242,15 @@ export const hydrateSession = (value: string | null): SessionStats => {
   try {
     const parsed = JSON.parse(value) as Partial<SessionStats>;
     const modeId = parsed.modeId && parsed.modeId in gameModes ? parsed.modeId : "standard";
+    const targetSegment = normalizeTargetSegment(parsed.targetSegment);
 
     return {
-      ...createInitialSession(modeId),
+      ...createInitialSession(modeId, targetSegment),
       ...parsed,
       modeId,
-      currentVisit: parsed.currentVisit ?? [],
-      history: parsed.history ?? [],
+      targetSegment,
+      currentVisit: normalizeDartResults(parsed.currentVisit),
+      history: normalizeHistory(parsed.history),
       personalBestStreak: parsed.personalBestStreak ?? parsed.bestStreak ?? 0,
     };
   } catch {

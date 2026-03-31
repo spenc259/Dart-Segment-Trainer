@@ -1,10 +1,12 @@
+import { formatDartResult } from "../lib/gameModes";
 import type { ScoredVisit } from "../types/game";
 
 interface VisitHistoryProps {
   history: ScoredVisit[];
+  targetSegment: number;
 }
 
-export function VisitHistory({ history }: VisitHistoryProps) {
+export function VisitHistory({ history, targetSegment }: VisitHistoryProps) {
   return (
     <section className="card secondary-panel history-panel">
       <div className="section-heading">
@@ -19,7 +21,7 @@ export function VisitHistory({ history }: VisitHistoryProps) {
             <article key={visit.visitNumber} className={`history-item ${visit.success ? "success" : "fail"}`}>
               <div>
                 <strong>Visit {visit.visitNumber}</strong>
-                <p>{visit.darts.join(" / ")}</p>
+                <p>{visit.darts.map((dart) => formatDartResult(dart, targetSegment)).join(" / ")}</p>
               </div>
               <div className="history-meta">
                 <span>{visit.pointsEarned > 0 ? `+${visit.pointsEarned}` : "0"}</span>

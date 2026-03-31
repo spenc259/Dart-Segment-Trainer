@@ -1,12 +1,12 @@
-export type DartResult = "S20" | "D20" | "T20" | "OTHER" | "MISS";
+export type DartResult = "S" | "D" | "T" | "OTHER" | "MISS";
 
 export type GameModeId = "standard" | "strict" | "precision" | "endurance";
 
 export interface GameMode {
   id: GameModeId;
   name: string;
-  description: string;
-  successLabel: string;
+  description: (segment: number) => string;
+  successLabel: (segment: number) => string;
   fixedVisits?: number;
   endsOnMiss?: boolean;
   getQualifyingHits: (darts: DartResult[]) => number;
@@ -36,5 +36,6 @@ export interface SessionStats {
   history: ScoredVisit[];
   currentVisit: DartResult[];
   modeId: GameModeId;
+  targetSegment: number;
   personalBestStreak: number;
 }
