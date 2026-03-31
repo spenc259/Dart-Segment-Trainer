@@ -6,6 +6,7 @@ import { VisitHistory } from "./components/VisitHistory";
 import {
   STORAGE_KEY,
   addDartToSession,
+  completeVisitWithDart,
   createInitialSession,
   getAccuracyPercent,
   getAverageScorePerVisit,
@@ -96,7 +97,9 @@ function App() {
   };
 
   const handleDart = (dart: Parameters<typeof addDartToSession>[1]) => {
-    setSession((current) => addDartToSession(current, dart));
+    setSession((current) =>
+      dart === "MISS" ? completeVisitWithDart(current, "MISS") : addDartToSession(current, dart),
+    );
   };
 
   const handleUndo = () => {
