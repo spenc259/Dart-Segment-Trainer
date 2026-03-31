@@ -396,7 +396,8 @@ button {
 }
 
 .dart-other,
-.dart-miss {
+.dart-miss,
+.dart-advance {
   grid-column: span 3;
 }
 
@@ -418,6 +419,10 @@ button {
 
 .dart-miss {
   background: #edf1f5;
+}
+
+.dart-advance {
+  background: #e6f4f0;
 }
 
 .dart-button:disabled {

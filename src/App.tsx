@@ -102,6 +102,10 @@ function App() {
     );
   };
 
+  const handleAdvance = () => {
+    setSession((current) => completeVisitWithDart(current, "OTHER"));
+  };
+
   const handleUndo = () => {
     setSession((current) => undoLastDartOrVisit(current));
   };
@@ -140,7 +144,7 @@ function App() {
         ))}
       </section>
 
-      <DartPad disabled={drillComplete} onSelect={handleDart} />
+      <DartPad disabled={drillComplete} onSelect={handleDart} onAdvance={handleAdvance} />
 
       <section className="visit-stage">
         <div className="visit-grid" aria-label="Current visit dart slots">
