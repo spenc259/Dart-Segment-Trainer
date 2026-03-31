@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ChangeEvent } from "react";
 import { useEffect, useState } from "react";
 import { DartPad } from "./components/DartPad";
 import { ModeSelector } from "./components/ModeSelector";
@@ -17,10 +17,11 @@ import {
   isSessionComplete,
   saveSession,
   switchMode,
+  switchTargetSegment,
   undoLastDartOrVisit,
 } from "./lib/gameEngine";
 import type { DartResult, GameModeId, SessionStats } from "./types/game";
-import { gameModes } from "./lib/gameModes";
+import { DEFAULT_TARGET_SEGMENT, formatDartResult, gameModes, targetSegmentOptions } from "./lib/gameModes";
 
 const getRingStyle = (progress: number, color: string): CSSProperties => {
   const clampedProgress = Math.max(0, Math.min(progress, 100));
@@ -31,11 +32,11 @@ const getRingStyle = (progress: number, color: string): CSSProperties => {
 
 const getVisitRingMeta = (dart?: DartResult) => {
   switch (dart) {
-    case "T20":
+    case "T":
       return { progress: 100, color: "#1fb36d" };
-    case "D20":
+    case "D":
       return { progress: 80, color: "#f4a11a" };
-    case "S20":
+    case "S":
       return { progress: 60, color: "#ef5b4d" };
     case "OTHER":
       return { progress: 28, color: "#4d95ff" };
@@ -105,6 +106,14 @@ function App() {
     setSession((current) => switchMode(current, modeId));
   };
 
+  const handleTargetSegmentChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const nextSegment = Number.parseInt(event.target.value, 10);
+
+    setSession((current) =>
+      switchTargetSegment(current, Number.isNaN(nextSegment) ? DEFAULT_TARGET_SEGMENT : nextSegment),
+    );
+  };
+
   const handleDart = (dart: Parameters<typeof addDartToSession>[1]) => {
     setSession((current) =>
       dart === "MISS" ? completeVisitWithDart(current, "MISS") : addDartToSession(current, dart),
@@ -121,23 +130,46 @@ function App() {
 
   const handleResetScore = () => {
     setSession((current) => ({
-      ...createInitialSession(current.modeId),
+      ...createInitialSession(current.modeId, current.targetSegment),
       personalBestStreak: current.personalBestStreak,
     }));
   };
 
   const handleNewSession = () => {
     window.localStorage.removeItem(STORAGE_KEY);
-    setSession(createInitialSession(session.modeId));
+    setSession(createInitialSession(session.modeId, session.targetSegment));
   };
 
   return (
     <main className="app-shell">
       <header className="intro-panel intro-panel-plain">
         <div className="intro-copy">
-          <p className="intro-description intro-description-strong">Find the segment consistently</p>
+          <p className="intro-description intro-description-strong">
+            Find the {session.targetSegment} segment consistently
+          </p>
         </div>
       </header>
+
+      <section className="card secondary-panel segment-panel">
+        <div className="section-heading">
+          <h2>Segment</h2>
+        </div>
+        <label className="segment-control" htmlFor="target-segment">
+          <span>Target segment</span>
+          <select
+            id="target-segment"
+            className="segment-select"
+            value={session.targetSegment}
+            onChange={handleTargetSegmentChange}
+          >
+            {targetSegmentOptions.map((segment) => (
+              <option key={segment} value={segment}>
+                {segment}
+              </option>
+            ))}
+          </select>
+        </label>
+      </section>
 
       <section className="card summary-bar" aria-label="Live stats">
         {summaryCards.map((card, index) => (
@@ -156,6 +188,7 @@ function App() {
       <DartPad
         disabled={drillComplete}
         disabledMessage={completionMessage}
+        targetSegment={session.targetSegment}
         onSelect={handleDart}
         onAdvance={handleAdvance}
       />
@@ -170,7 +203,7 @@ function App() {
               <article key={index} className="visit-slot">
                 <div className="progress-ring progress-ring-visit" style={getRingStyle(ringMeta.progress, ringMeta.color)}>
                   <div className="progress-ring-inner">
-                    <strong>{dart ?? "--"}</strong>
+                    <strong>{dart ? formatDartResult(dart, session.targetSegment) : "--"}</strong>
                   </div>
                 </div>
               </article>
@@ -233,7 +266,7 @@ function App() {
         </div>
       </section>
 
-      <VisitHistory history={session.history} />
+      <VisitHistory history={session.history} targetSegment={session.targetSegment} />
 
       <section className="card secondary-panel stats-panel">
         <div className="section-heading">
@@ -273,7 +306,7 @@ function App() {
             </article>
             <article className="mini-stat">
               <span>Mode target</span>
-              <strong>{mode.successLabel}</strong>
+              <strong>{mode.successLabel(session.targetSegment)}</strong>
             </article>
           </div>
         ) : null}
@@ -284,7 +317,11 @@ function App() {
           <div className="section-heading">
             <h2>Modes</h2>
           </div>
-          <ModeSelector selectedMode={session.modeId} onSelect={handleModeSelect} />
+          <ModeSelector
+            selectedMode={session.modeId}
+            targetSegment={session.targetSegment}
+            onSelect={handleModeSelect}
+          />
         </section>
       </section>
     </main>

@@ -393,6 +393,7 @@ button {
 }
 
 .dart-button small {
+  display: block;
   color: var(--ink-soft);
 }
 
@@ -402,15 +403,15 @@ button {
   grid-column: span 3;
 }
 
-.dart-s20 {
+.dart-s {
   background: #ffe9e4;
 }
 
-.dart-d20 {
+.dart-d {
   background: #ffefca;
 }
 
-.dart-t20 {
+.dart-t {
   background: #ddf5e6;
 }
 
@@ -469,6 +470,29 @@ button {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.65rem;
+}
+
+.segment-control {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.segment-control span {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+.segment-select {
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  background: #f4f8fc;
+  color: var(--ink);
+  border: 1px solid rgba(221, 230, 238, 0.95);
+  font: inherit;
 }
 
 .utility-button {
