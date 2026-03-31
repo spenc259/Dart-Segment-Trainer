@@ -50,6 +50,7 @@ function App() {
   const [session, setSession] = useState<SessionStats>(() =>
     hydrateSession(window.localStorage.getItem(STORAGE_KEY)),
   );
+  const [statsExpanded, setStatsExpanded] = useState(false);
 
   useEffect(() => {
     saveSession(session);
@@ -233,38 +234,46 @@ function App() {
 
       <section className="card secondary-panel stats-panel">
         <div className="section-heading">
-          <div>
-            <p className="section-label">Stats</p>
-            <h2>Session stats</h2>
-          </div>
+          <h2>Stats</h2>
+          <button
+            type="button"
+            className="section-toggle"
+            aria-expanded={statsExpanded}
+            aria-controls="session-stats-grid"
+            onClick={() => setStatsExpanded((current) => !current)}
+          >
+            {statsExpanded ? "Hide" : "Show"}
+          </button>
         </div>
 
-        <div className="mini-stats-grid" aria-label="Session stats">
-          <article className="mini-stat">
-            <span>Accuracy</span>
-            <strong>{accuracy}%</strong>
-          </article>
-          <article className="mini-stat">
-            <span>Visit success</span>
-            <strong>{successRate}%</strong>
-          </article>
-          <article className="mini-stat">
-            <span>Average score</span>
-            <strong>{averageScore}</strong>
-          </article>
-          <article className="mini-stat">
-            <span>Hits landed</span>
-            <strong>{session.totalQualifyingHits}</strong>
-          </article>
-          <article className="mini-stat">
-            <span>Personal best</span>
-            <strong>{session.personalBestStreak}</strong>
-          </article>
-          <article className="mini-stat">
-            <span>Mode target</span>
-            <strong>{mode.successLabel}</strong>
-          </article>
-        </div>
+        {statsExpanded ? (
+          <div id="session-stats-grid" className="mini-stats-grid" aria-label="Session stats">
+            <article className="mini-stat">
+              <span>Accuracy</span>
+              <strong>{accuracy}%</strong>
+            </article>
+            <article className="mini-stat">
+              <span>Visit success</span>
+              <strong>{successRate}%</strong>
+            </article>
+            <article className="mini-stat">
+              <span>Average score</span>
+              <strong>{averageScore}</strong>
+            </article>
+            <article className="mini-stat">
+              <span>Hits landed</span>
+              <strong>{session.totalQualifyingHits}</strong>
+            </article>
+            <article className="mini-stat">
+              <span>Personal best</span>
+              <strong>{session.personalBestStreak}</strong>
+            </article>
+            <article className="mini-stat">
+              <span>Mode target</span>
+              <strong>{mode.successLabel}</strong>
+            </article>
+          </div>
+        ) : null}
       </section>
 
       <section className="secondary-grid">
