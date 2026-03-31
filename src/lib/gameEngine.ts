@@ -31,7 +31,15 @@ export const getSessionVisitLimit = (session: SessionStats) => {
   return mode.fixedVisits ?? DEFAULT_MAX_VISITS;
 };
 
-export const isSessionComplete = (session: SessionStats) => session.visitsPlayed >= getSessionVisitLimit(session);
+export const isSessionComplete = (session: SessionStats) => {
+  const mode = gameModes[session.modeId];
+
+  if (session.visitsPlayed >= getSessionVisitLimit(session)) {
+    return true;
+  }
+
+  return Boolean(mode.endsOnMiss && session.history.some((visit) => visit.darts.includes("MISS")));
+};
 
 const getStreakBonus = (streakAfterVisit: number) => {
   if (streakAfterVisit > 0 && streakAfterVisit % 3 === 0) return 1;
