@@ -83,6 +83,21 @@ export const addDartToSession = (session: SessionStats, dart: DartResult): Sessi
   return scoreVisit(session, nextVisit);
 };
 
+export const completeVisitWithDart = (session: SessionStats, dart: DartResult): SessionStats => {
+  const remainingDarts = Math.max(0, 3 - session.currentVisit.length);
+
+  if (remainingDarts === 0) {
+    return session;
+  }
+
+  const completedVisit = [
+    ...session.currentVisit,
+    ...Array.from({ length: remainingDarts }, () => dart),
+  ];
+
+  return scoreVisit(session, completedVisit);
+};
+
 export const undoLastDartOrVisit = (session: SessionStats): SessionStats => {
   if (session.currentVisit.length > 0) {
     return {
