@@ -8,9 +8,8 @@ interface VisitHistoryProps {
 
 export function VisitHistory({ history, targetSegment }: VisitHistoryProps) {
   return (
-    <section className="card secondary-panel history-panel">
-      <div className="section-heading">
-        <h2>History</h2>
+    <section className="history-panel" aria-label="Visit history">
+      <div className="history-panel-meta">
         <span className="history-count">{history.length}</span>
       </div>
       <div className="history-list">
