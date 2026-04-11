@@ -48,6 +48,7 @@ This file is the standing project brief for work in this repository. Read it bef
 - Keep shared styling in `src/index.css` unless the project structure changes intentionally.
 - Reuse existing CSS variables and add new variables when introducing repeatable colors or surfaces.
 - Prefer extending existing class patterns over one-off styling unless the new UI truly needs a new pattern.
+- Do not use gradients in the design unless the user explicitly asks for them.
 - Make sure layouts work on small screens first, then scale up for larger viewports.
 
 ## State and Persistence

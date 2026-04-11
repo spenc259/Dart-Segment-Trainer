@@ -3,56 +3,92 @@
   font-family: "Aptos", "Segoe UI Variable Text", "Segoe UI", sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #eef4f7;
-  background: #0a1015;
+  color: #ffffff;
+  background: #121619;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --ink: #eef4f7;
-  --ink-soft: #94a3b2;
-  --page-bg: #0d141c;
-  --shell: rgba(18, 27, 36, 0.98);
-  --shell-border: rgba(161, 179, 193, 0.14);
-  --card: rgba(19, 27, 34, 0.92);
-  --card-border: rgba(150, 168, 183, 0.16);
-  --card-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
-  --surface-soft: rgba(25, 35, 44, 0.96);
-  --surface-strong: rgba(31, 42, 53, 0.96);
-  --surface-selected: rgba(27, 54, 78, 0.98);
-  --surface-selected-border: rgba(117, 170, 237, 0.45);
-  --surface-border: rgba(159, 177, 191, 0.14);
-  --surface-divider: rgba(159, 177, 191, 0.16);
-  --ring-inner: #0c1217;
-  --ring-border: rgba(157, 174, 188, 0.2);
-  --blue: #6aa9ff;
-  --green: #49cf87;
-  --amber: #ffbe55;
-  --red: #ff7d68;
-  --violet: #9aa7ff;
-  --button-primary-bg: rgba(68, 122, 196, 0.26);
-  --button-primary-text: #d9ebff;
-  --done-chip-bg: rgba(73, 207, 135, 0.14);
-  --done-chip-text: #8be3ac;
-  --highlight-fill: rgba(106, 169, 255, 0.14);
-  --dart-s-bg: rgba(139, 48, 36, 0.42);
-  --dart-d-bg: rgba(122, 86, 18, 0.42);
-  --dart-t-bg: rgba(28, 92, 53, 0.42);
-  --dart-other-bg: rgba(35, 72, 112, 0.42);
-  --dart-miss-bg: rgba(66, 77, 88, 0.4);
-  --dart-advance-bg: rgba(28, 92, 53, 0.32);
-  --overlay: rgba(5, 9, 13, 0.68);
+  --ink: #ffffff;
+  --ink-soft: #c6bba5;
+  --page-bg: #121619;
+  --shell: rgba(18, 22, 25, 0.98);
+  --shell-border: rgba(114, 40, 40, 0.28);
+  --card: rgba(18, 22, 25, 0.96);
+  --card-border: rgba(114, 40, 40, 0.34);
+  --card-shadow: 0 24px 60px rgba(6, 8, 8, 0.42);
+  --surface-soft: rgba(114, 40, 40, 0.12);
+  --surface-strong: rgba(114, 40, 40, 0.18);
+  --surface-selected: rgba(114, 40, 40, 0.24);
+  --surface-selected-border: rgba(114, 40, 40, 0.58);
+  --surface-border: rgba(114, 40, 40, 0.32);
+  --surface-divider: rgba(198, 187, 165, 0.12);
+  --ring-inner: #121619;
+  --ring-border: rgba(114, 40, 40, 0.28);
+  --blue: #722828;
+  --green: #2d4739;
+  --amber: #c35d32;
+  --red: #722828;
+  --violet: #c6bba5;
+  --button-primary-bg: rgba(114, 40, 40, 0.34);
+  --button-primary-text: #ffffff;
+  --done-chip-bg: rgba(114, 40, 40, 0.22);
+  --done-chip-text: #f3d9d9;
+  --highlight-fill: rgba(114, 40, 40, 0.18);
+  --dart-s-bg: rgba(114, 40, 40, 0.28);
+  --dart-d-bg: rgba(195, 93, 50, 0.32);
+  --dart-t-bg: rgba(45, 71, 57, 0.28);
+  --dart-other-bg: rgba(198, 187, 165, 0.14);
+  --dart-miss-bg: rgba(18, 22, 25, 0.82);
+  --dart-advance-bg: rgba(114, 40, 40, 0.22);
+  --overlay: rgba(5, 8, 8, 0.78);
   --intro-hero-surface: transparent;
   --intro-hero-border: transparent;
   --intro-hero-ink: var(--ink);
   --intro-hero-muted: var(--ink-soft);
-  --intro-card-surface: rgba(255, 255, 255, 0.04);
-  --intro-card-border: rgba(150, 168, 183, 0.14);
-  --intro-preview-surface: rgba(255, 255, 255, 0.04);
-  --float-surface: rgba(19, 27, 34, 0.94);
-  --float-icon: #9fafbd;
-  --float-active-surface: rgba(106, 169, 255, 0.2);
-  --float-active-icon: #d7ebff;
+  --intro-card-surface: rgba(18, 22, 25, 0.92);
+  --intro-card-border: rgba(114, 40, 40, 0.3);
+  --intro-preview-surface: rgba(114, 40, 40, 0.12);
+  --intro-heading-ink: var(--ink);
+  --intro-icon-bg: rgba(114, 40, 40, 0.2);
+  --intro-icon-accent: #722828;
+  --intro-icon-core: #ffffff;
+  --intro-preview-ink: rgba(198, 187, 165, 0.74);
+  --intro-mode-card-bg: rgba(114, 40, 40, 0.14);
+  --intro-mode-card-border: rgba(114, 40, 40, 0.24);
+  --intro-mode-card-selected-bg: rgba(114, 40, 40, 0.26);
+  --intro-mode-card-selected-border: rgba(114, 40, 40, 0.58);
+  --intro-mode-name-ink: var(--ink);
+  --intro-mode-copy-ink: var(--ink-soft);
+  --intro-cta-bg: #722828;
+  --intro-cta-text: #ffffff;
+  --intro-emblem-shell-bg: #722828;
+  --intro-emblem-shadow: 0 14px 28px rgba(114, 40, 40, 0.22);
+  --intro-emblem-inner-bg: rgba(18, 22, 25, 0.96);
+  --intro-emblem-board-ink: rgba(198, 187, 165, 0.74);
+  --float-surface: rgba(18, 22, 25, 0.94);
+  --float-icon: #c6bba5;
+  --float-active-surface: rgba(114, 40, 40, 0.28);
+  --float-active-icon: #ffffff;
+  --float-shadow: 0 20px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --accent-primary: #722828;
+  --accent-secondary: #2d4739;
+  --accent-warm: #c35d32;
+  --accent-danger: #722828;
+  --accent-muted: #c6bba5;
+  --ring-track: rgba(198, 187, 165, 0.12);
+  --ring-triple-color: var(--accent-primary);
+  --ring-double-color: var(--accent-warm);
+  --ring-single-color: var(--accent-danger);
+  --ring-other-color: var(--accent-secondary);
+  --ring-muted-color: var(--accent-muted);
+  --ring-empty-color: rgba(198, 187, 165, 0.46);
+  --summary-score-color: var(--accent-primary);
+  --summary-streak-color: var(--accent-warm);
+  --summary-best-color: var(--accent-secondary);
+  --summary-turn-color: var(--accent-danger);
+  --progress-ring-color: var(--accent-primary);
+  --success-ring-color: var(--accent-primary);
 }
 
 :root[data-theme="light"] {
@@ -99,10 +135,46 @@
   --intro-card-surface: rgba(255, 255, 255, 0.9);
   --intro-card-border: rgba(196, 214, 232, 0.8);
   --intro-preview-surface: rgba(237, 243, 249, 0.9);
+  --intro-heading-ink: #11161f;
+  --intro-icon-bg: #dbe9f9;
+  --intro-icon-accent: #2576f3;
+  --intro-icon-core: #ffffff;
+  --intro-preview-ink: #758390;
+  --intro-mode-card-bg: rgba(243, 246, 249, 0.92);
+  --intro-mode-card-border: rgba(200, 210, 220, 0.85);
+  --intro-mode-card-selected-bg: rgba(223, 238, 255, 0.98);
+  --intro-mode-card-selected-border: rgba(62, 126, 226, 0.34);
+  --intro-mode-name-ink: #10161f;
+  --intro-mode-copy-ink: #5f6b77;
+  --intro-cta-bg: #2f80ed;
+  --intro-cta-text: #f7fbff;
+  --intro-emblem-shell-bg: #2f80ed;
+  --intro-emblem-shadow: 0 14px 28px rgba(44, 125, 240, 0.2);
+  --intro-emblem-inner-bg: rgba(255, 255, 255, 0.94);
+  --intro-emblem-board-ink: #7f8b96;
   --float-surface: rgba(255, 255, 255, 0.94);
   --float-icon: #687480;
   --float-active-surface: #a8d2ff;
   --float-active-icon: #2576f3;
+  --float-shadow: 0 20px 44px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  --accent-primary: #2c7df0;
+  --accent-secondary: #7d8df7;
+  --accent-warm: #f4a11a;
+  --accent-danger: #ef5b4d;
+  --accent-muted: #94a3b2;
+  --ring-track: rgba(182, 204, 226, 0.48);
+  --ring-triple-color: #1fb36d;
+  --ring-double-color: #f4a11a;
+  --ring-single-color: #ef5b4d;
+  --ring-other-color: #4d95ff;
+  --ring-muted-color: #cbd4de;
+  --ring-empty-color: #d7dde5;
+  --summary-score-color: #2c7df0;
+  --summary-streak-color: #f4a11a;
+  --summary-best-color: #1fb36d;
+  --summary-turn-color: #7d8df7;
+  --progress-ring-color: #2c7df0;
+  --success-ring-color: #1fb36d;
 }
 
 * {
@@ -169,7 +241,6 @@ button {
 .results-hero,
 .options-summary,
 .stage-actions,
-.header-actions,
 .progress-badge-row,
 .intro-topbar {
   display: flex;
@@ -191,6 +262,7 @@ button {
 .play-grid,
 .play-main,
 .play-side,
+.selection-stack,
 .secondary-panel,
 .history-panel,
 .stage-copy,
@@ -307,8 +379,8 @@ button {
   height: 132px;
   padding: 12px;
   border-radius: 999px;
-  background: #2f80ed;
-  box-shadow: 0 14px 28px rgba(44, 125, 240, 0.2);
+  background: var(--intro-emblem-shell-bg);
+  box-shadow: var(--intro-emblem-shadow);
 }
 
 .intro-emblem {
@@ -316,7 +388,7 @@ button {
   height: 100%;
   padding: 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
+  background: var(--intro-emblem-inner-bg);
   display: grid;
   place-items: center;
 }
@@ -330,7 +402,7 @@ button {
 
 .intro-emblem-board .dartboard-outline {
   max-width: 96px;
-  color: #7f8b96;
+  color: var(--intro-emblem-board-ink);
 }
 
 .intro-copy-block {
@@ -368,14 +440,14 @@ button {
 .intro-feature-card strong,
 .intro-board-card h2,
 .intro-mode-panel h2 {
-  color: #11161f;
+  color: var(--intro-heading-ink);
 }
 
 .intro-feature-icon {
   width: 48px;
   height: 48px;
   border-radius: 16px;
-  background: #dbe9f9;
+  background: var(--intro-icon-bg);
   position: relative;
 }
 
@@ -386,7 +458,7 @@ button {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background: #2576f3;
+  background: var(--intro-icon-accent);
   border-radius: 999px;
 }
 
@@ -398,13 +470,13 @@ button {
 .intro-feature-icon::after {
   width: 8px;
   height: 8px;
-  background: #ffffff;
+  background: var(--intro-icon-core);
 }
 
 .intro-board-card .section-label,
 .intro-board-card .progress-support,
 .intro-mode-panel .section-label {
-  color: #5e6874;
+  color: var(--intro-mode-copy-ink);
 }
 
 .intro-board-preview {
@@ -415,26 +487,26 @@ button {
 
 .intro-board-preview .dartboard-outline {
   max-width: 210px;
-  color: #758390;
+  color: var(--intro-preview-ink);
 }
 
 .intro-mode-panel .mode-card {
-  background: rgba(243, 246, 249, 0.92);
-  border-color: rgba(200, 210, 220, 0.85);
+  background: var(--intro-mode-card-bg);
+  border-color: var(--intro-mode-card-border);
 }
 
 .intro-mode-panel .mode-card.selected {
-  background: rgba(223, 238, 255, 0.98);
-  border-color: rgba(62, 126, 226, 0.34);
+  background: var(--intro-mode-card-selected-bg);
+  border-color: var(--intro-mode-card-selected-border);
 }
 
 .intro-mode-panel .mode-name {
-  color: #10161f;
+  color: var(--intro-mode-name-ink);
 }
 
 .intro-mode-panel .mode-description,
 .intro-mode-panel .mode-rule {
-  color: #5f6b77;
+  color: var(--intro-mode-copy-ink);
 }
 
 .intro-cta-wrap {
@@ -446,8 +518,8 @@ button {
   min-height: 60px;
   border-radius: 20px;
   font-size: 1.05rem;
-  background: #2f80ed;
-  color: #f7fbff;
+  background: var(--intro-cta-bg);
+  color: var(--intro-cta-text);
   border-color: transparent;
 }
 
@@ -880,9 +952,7 @@ button {
   padding: 0.6rem;
   border-radius: 28px;
   background: var(--float-surface);
-  box-shadow:
-    0 20px 44px rgba(0, 0, 0, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: var(--float-shadow);
   z-index: 20;
   white-space: nowrap;
 }
@@ -963,7 +1033,7 @@ button {
   }
 
   .selection-layout {
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     align-items: start;
   }
 
