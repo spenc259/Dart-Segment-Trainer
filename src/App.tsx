@@ -58,24 +58,24 @@ const getInitialJourneyStage = (session: SessionStats): JourneyStage => {
 const getRingStyle = (progress: number, color: string): CSSProperties => {
   const clampedProgress = Math.max(0, Math.min(progress, 100));
   return {
-    background: `conic-gradient(${color} 0deg ${clampedProgress * 3.6}deg, rgba(173, 183, 194, 0.28) ${clampedProgress * 3.6}deg 360deg)`,
+    background: `conic-gradient(${color} 0deg ${clampedProgress * 3.6}deg, var(--ring-track) ${clampedProgress * 3.6}deg 360deg)`,
   };
 };
 
 const getVisitRingMeta = (dart?: DartResult) => {
   switch (dart) {
     case "T":
-      return { progress: 100, color: "#1fb36d" };
+      return { progress: 100, color: "var(--ring-triple-color)" };
     case "D":
-      return { progress: 80, color: "#f4a11a" };
+      return { progress: 80, color: "var(--ring-double-color)" };
     case "S":
-      return { progress: 60, color: "#ef5b4d" };
+      return { progress: 60, color: "var(--ring-single-color)" };
     case "OTHER":
-      return { progress: 28, color: "#4d95ff" };
+      return { progress: 28, color: "var(--ring-other-color)" };
     case "MISS":
-      return { progress: 0, color: "#cbd4de" };
+      return { progress: 0, color: "var(--ring-muted-color)" };
     default:
-      return { progress: 0, color: "#d7dde5" };
+      return { progress: 0, color: "var(--ring-empty-color)" };
   };
 };
 
@@ -219,25 +219,25 @@ function App() {
       label: "Score",
       value: session.score,
       progress: Math.min(100, Math.round((session.score / Math.max(goalVisits * 2, 1)) * 100)),
-      color: "#2c7df0",
+      color: "var(--summary-score-color)",
     },
     {
       label: "Streak",
       value: session.streak,
       progress: Math.min(100, Math.round((session.streak / personalBestBase) * 100)),
-      color: "#f4a11a",
+      color: "var(--summary-streak-color)",
     },
     {
       label: "Best",
       value: session.bestStreak,
       progress: Math.min(100, Math.round((session.bestStreak / personalBestBase) * 100)),
-      color: "#1fb36d",
+      color: "var(--summary-best-color)",
     },
     {
       label: "Turn",
       value: currentVisitNumber,
       progress: Math.min(100, Math.round((Math.min(currentVisitNumber, goalVisits) / goalVisits) * 100)),
-      color: "#7d8df7",
+      color: "var(--summary-turn-color)",
     },
   ];
 
@@ -564,7 +564,10 @@ function App() {
 
               <aside className="play-side">
                 <section className="card progress-card progress-card-large">
-                  <div className="progress-ring progress-ring-large" style={getRingStyle(sessionProgress, "#2c7df0")}>
+                  <div
+                    className="progress-ring progress-ring-large"
+                    style={getRingStyle(sessionProgress, "var(--progress-ring-color)")}
+                  >
                     <div className="progress-ring-inner">
                       <strong>
                         {sessionProgressValue}/{goalVisits}
@@ -607,7 +610,10 @@ function App() {
                 </div>
               </div>
 
-              <div className="progress-ring progress-ring-large" style={getRingStyle(successRate, "#1fb36d")}>
+              <div
+                className="progress-ring progress-ring-large"
+                style={getRingStyle(successRate, "var(--success-ring-color)")}
+              >
                 <div className="progress-ring-inner">
                   <strong>{successRate}%</strong>
                   <span>Visit success</span>
