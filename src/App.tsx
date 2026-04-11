@@ -443,25 +443,6 @@ function App() {
 
         {journeyStage === "play" ? (
           <section className="stage-flow">
-            <header className="card stage-header">
-              <div className="stage-copy">
-                <p className="section-label">Current inputs</p>
-                <h1>
-                  {mode.name} on {session.targetSegment}
-                </h1>
-                <p className="stage-description">{mode.description(session.targetSegment)}</p>
-              </div>
-
-              <div className="header-actions">
-                <button type="button" className="section-toggle" onClick={() => setJourneyStage("segment")}>
-                  Edit setup
-                </button>
-                <button type="button" className="section-toggle" onClick={() => setJourneyStage("intro")}>
-                  Intro
-                </button>
-              </div>
-            </header>
-
             <section className="card summary-bar" aria-label="Live stats">
               {summaryCards.map((card, index) => (
                 <article key={card.label} className="summary-item">
