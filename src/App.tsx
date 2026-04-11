@@ -1,4 +1,4 @@
-import type { CSSProperties, ChangeEvent } from "react";
+import type { CSSProperties, ChangeEvent, KeyboardEvent as ReactKeyboardEvent, MouseEvent } from "react";
 import { useEffect, useState } from "react";
 import { DartPad } from "./components/DartPad";
 import { DartboardOutline } from "./components/DartboardOutline";
@@ -25,6 +25,7 @@ import type { DartResult, GameModeId, SessionStats } from "./types/game";
 import { DEFAULT_TARGET_SEGMENT, formatDartResult, gameModes, targetSegmentOptions } from "./lib/gameModes";
 
 type ThemePreference = "dark" | "light" | "device";
+type JourneyStage = "intro" | "segment" | "play" | "results";
 
 const THEME_STORAGE_KEY = "twenty-lock-theme-v1";
 
@@ -38,7 +39,21 @@ const getStoredThemePreference = (): ThemePreference => {
   return "dark";
 };
 
+const getStoredSession = () => hydrateSession(window.localStorage.getItem(STORAGE_KEY));
+
 const getSystemPrefersDark = () => window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+const getInitialJourneyStage = (session: SessionStats): JourneyStage => {
+  if (isSessionComplete(session)) {
+    return "results";
+  }
+
+  if (session.visitsPlayed > 0 || session.currentVisit.length > 0) {
+    return "play";
+  }
+
+  return "intro";
+};
 
 const getRingStyle = (progress: number, color: string): CSSProperties => {
   const clampedProgress = Math.max(0, Math.min(progress, 100));
@@ -64,13 +79,19 @@ const getVisitRingMeta = (dart?: DartResult) => {
   }
 };
 
+const journeySteps: Array<{ id: JourneyStage; label: string }> = [
+  { id: "intro", label: "Intro" },
+  { id: "segment", label: "Segment" },
+  { id: "play", label: "Inputs" },
+  { id: "results", label: "Results" },
+];
+
 function App() {
-  const [session, setSession] = useState<SessionStats>(() =>
-    hydrateSession(window.localStorage.getItem(STORAGE_KEY)),
-  );
-  const [statsExpanded, setStatsExpanded] = useState(false);
+  const [session, setSession] = useState<SessionStats>(getStoredSession);
+  const [journeyStage, setJourneyStage] = useState<JourneyStage>(() => getInitialJourneyStage(getStoredSession()));
   const [themePreference, setThemePreference] = useState<ThemePreference>(getStoredThemePreference);
   const [systemPrefersDark, setSystemPrefersDark] = useState(getSystemPrefersDark);
+  const [optionsOpen, setOptionsOpen] = useState(false);
 
   useEffect(() => {
     saveSession(session);
@@ -89,6 +110,30 @@ function App() {
       mediaQuery.removeEventListener("change", handleChange);
     };
   }, []);
+
+  useEffect(() => {
+    if (isSessionComplete(session)) {
+      setJourneyStage("results");
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (!optionsOpen) {
+      return undefined;
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOptionsOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [optionsOpen]);
 
   const resolvedTheme = themePreference === "device" ? (systemPrefersDark ? "dark" : "light") : themePreference;
 
@@ -110,11 +155,9 @@ function App() {
   const sessionProgress = Math.round((sessionProgressValue / goalVisits) * 100);
   const personalBestBase = Math.max(session.personalBestStreak, 4);
   const endedByMiss = Boolean(mode.endsOnMiss && session.history.some((visit) => visit.darts.includes("MISS")));
-  const completionMessage = drillComplete
-    ? endedByMiss
-      ? "A miss ended this endurance block. Reset to start another run."
-      : `You've reached ${goalVisits} visits. Reset to start another block.`
-    : undefined;
+  const completionMessage = endedByMiss
+    ? "A miss ended this endurance block. Restart the segment or choose a different number."
+    : `You completed ${goalVisits} visits on segment ${session.targetSegment}.`;
 
   const summaryCards = [
     {
@@ -141,6 +184,17 @@ function App() {
       progress: Math.min(100, Math.round((Math.min(currentVisitNumber, goalVisits) / goalVisits) * 100)),
       color: "#7d8df7",
     },
+  ];
+
+  const resultStats = [
+    { label: "Final score", value: session.score },
+    { label: "Accuracy", value: `${accuracy}%` },
+    { label: "Visit success", value: `${successRate}%` },
+    { label: "Average score", value: averageScore },
+    { label: "Hits landed", value: session.totalQualifyingHits },
+    { label: "Best streak", value: session.bestStreak },
+    { label: "Personal best", value: session.personalBestStreak },
+    { label: "Completed visits", value: session.visitsPlayed },
   ];
 
   const handleModeSelect = (modeId: GameModeId) => {
@@ -174,232 +228,408 @@ function App() {
       ...createInitialSession(current.modeId, current.targetSegment),
       personalBestStreak: current.personalBestStreak,
     }));
+    setJourneyStage("play");
   };
 
   const handleNewSession = () => {
     window.localStorage.removeItem(STORAGE_KEY);
-    setSession(createInitialSession(session.modeId, session.targetSegment));
+    setSession((current) => createInitialSession(current.modeId, current.targetSegment));
+    setJourneyStage("intro");
+  };
+
+  const handleRestartSegment = () => {
+    setSession((current) => ({
+      ...createInitialSession(current.modeId, current.targetSegment),
+      personalBestStreak: current.personalBestStreak,
+    }));
+    setJourneyStage("play");
+  };
+
+  const handlePickAnotherSegment = () => {
+    setSession((current) => ({
+      ...createInitialSession(current.modeId, current.targetSegment),
+      personalBestStreak: current.personalBestStreak,
+    }));
+    setJourneyStage("segment");
+  };
+
+  const handleOverlayClose = () => {
+    setOptionsOpen(false);
+  };
+
+  const handleOverlayClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      handleOverlayClose();
+    }
+  };
+
+  const handleOverlayKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape") {
+      handleOverlayClose();
+    }
   };
 
   return (
-    <main className="app-shell">
-      <header className="intro-panel intro-panel-plain">
-        <div className="intro-copy">
-          <p className="intro-description intro-description-strong">
-            Find the {session.targetSegment} segment consistently
-          </p>
-        </div>
-      </header>
-
-      <section className="card secondary-panel segment-panel">
-        <div className="section-heading">
-          <h2>Segment</h2>
-        </div>
-        <label className="segment-control" htmlFor="target-segment">
-          <span>Target segment</span>
-          <select
-            id="target-segment"
-            className="segment-select"
-            value={session.targetSegment}
-            onChange={handleTargetSegmentChange}
-          >
-            {targetSegmentOptions.map((segment) => (
-              <option key={segment} value={segment}>
-                {segment}
-              </option>
-            ))}
-          </select>
-        </label>
-      </section>
-
-      <section className="card secondary-panel theme-panel">
-        <div className="section-heading">
-          <h2>Theme</h2>
-        </div>
-        <div className="theme-switcher" role="group" aria-label="Theme preference">
-          {(["dark", "light", "device"] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              className={`theme-button ${themePreference === option ? "selected" : ""}`}
-              aria-pressed={themePreference === option}
-              onClick={() => setThemePreference(option)}
-            >
-              {option === "device" ? "Device" : option[0].toUpperCase() + option.slice(1)}
-            </button>
-          ))}
-        </div>
-        <p className="progress-support">
-          {themePreference === "device"
-            ? `Using your device preference. Current theme: ${resolvedTheme}.`
-            : `Using the ${resolvedTheme} theme.`}
-        </p>
-      </section>
-
-      <section className="card summary-bar" aria-label="Live stats">
-        {summaryCards.map((card, index) => (
-          <article key={card.label} className="summary-item">
-            <p className="section-label summary-label">{card.label}</p>
-            <div className="summary-ring" style={getRingStyle(card.progress, card.color)}>
-              <div className="summary-ring-inner">
-                <strong>{card.value}</strong>
-              </div>
-            </div>
-            {index < summaryCards.length - 1 ? <span className="summary-divider" aria-hidden="true" /> : null}
-          </article>
-        ))}
-      </section>
-
-      <DartPad
-        disabled={drillComplete}
-        disabledMessage={completionMessage}
-        targetSegment={session.targetSegment}
-        onSelect={handleDart}
-        onAdvance={handleAdvance}
-      />
-
-      <section className="visit-stage">
-        <div className="visit-grid" aria-label="Current visit dart slots">
-          {[0, 1, 2].map((index) => {
-            const dart = session.currentVisit[index];
-            const ringMeta = getVisitRingMeta(dart);
+    <>
+      <main className="app-shell">
+        <nav className="card journey-nav" aria-label="Practice journey">
+          {journeySteps.map((step, index) => {
+            const currentIndex = journeySteps.findIndex((entry) => entry.id === journeyStage);
+            const isActive = step.id === journeyStage;
+            const isComplete = index < currentIndex;
 
             return (
-              <article key={index} className="visit-slot">
-                <div className="progress-ring progress-ring-visit" style={getRingStyle(ringMeta.progress, ringMeta.color)}>
-                  <div className="progress-ring-inner">
-                    <strong>{dart ? formatDartResult(dart, session.targetSegment) : "--"}</strong>
-                  </div>
-                </div>
-              </article>
+              <div
+                key={step.id}
+                className={`journey-step ${isActive ? "active" : ""} ${isComplete ? "complete" : ""}`}
+              >
+                <span className="journey-index">{index + 1}</span>
+                <span>{step.label}</span>
+              </div>
             );
           })}
-        </div>
-      </section>
+        </nav>
 
-      <section className="card secondary-panel controls-panel">
-        {drillComplete ? <p className="input-note">{completionMessage}</p> : null}
+        {journeyStage === "intro" ? (
+          <section className="card stage-card hero-stage">
+            <div className="stage-copy">
+              <p className="section-label">Twenty Lock</p>
+              <h1>Train through a cleaner journey from setup to session results.</h1>
+              <p className="stage-description">
+                Pick a mode, choose your number, record your visits, then finish on a results screen that helps you
+                decide whether to run it back or move on.
+              </p>
+              <div className="progress-badge-row">
+                <span className="streak-badge">{mode.name} mode</span>
+                <span className="inline-badge">Target {session.targetSegment}</span>
+              </div>
+            </div>
 
-        <div className="action-row">
-          <button
-            type="button"
-            className="utility-button primary"
-            aria-label="Undo last dart or visit"
-            onClick={handleUndo}
-          >
-            Undo
-          </button>
-          <button
-            type="button"
-            className="utility-button"
-            aria-label="Reset game"
-            onClick={handleResetScore}
-          >
-            {drillComplete ? "Reset to play again" : "Reset"}
-          </button>
-          <button
-            type="button"
-            className="utility-button"
-            aria-label="Start a new session"
-            onClick={handleNewSession}
-          >
-            New session
-          </button>
-        </div>
-      </section>
+            <div className="hero-layout">
+              <section className="card hero-board-panel">
+                <div className="section-heading">
+                  <h2>Board picture</h2>
+                </div>
+                <p className="progress-support">
+                  Keep the picture of {session.targetSegment} clear before you step into the throw.
+                </p>
+                <DartboardOutline targetSegment={session.targetSegment} />
+              </section>
 
-      <section className="card progress-card progress-card-large">
-        <div className="progress-ring progress-ring-large" style={getRingStyle(sessionProgress, "#2c7df0")}>
-          <div className="progress-ring-inner">
-            <strong>
-              {sessionProgressValue}/{goalVisits}
-            </strong>
-            <span>Visits</span>
-          </div>
-        </div>
+              <section className="card secondary-panel">
+                <div className="section-heading">
+                  <h2>Mode selection</h2>
+                </div>
+                <ModeSelector
+                  selectedMode={session.modeId}
+                  targetSegment={session.targetSegment}
+                  onSelect={handleModeSelect}
+                />
+              </section>
+            </div>
 
-        <div className="progress-copy">
-          <p className="section-label">Session progress</p>
-          <h2>Overall progress</h2>
-          <p className="progress-support">{sessionProgressValue}/{goalVisits} visits completed</p>
-          <div className="progress-badge-row">
-            <span className="streak-badge">Streak {session.streak}</span>
-            <span className={`inline-badge ${drillComplete ? "done" : ""}`}>
-              {drillComplete ? "Complete" : mode.name}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <VisitHistory history={session.history} targetSegment={session.targetSegment} />
-
-      <section className="card secondary-panel stats-panel">
-        <div className="section-heading">
-          <h2>Stats</h2>
-          <button
-            type="button"
-            className="section-toggle"
-            aria-expanded={statsExpanded}
-            aria-controls="session-stats-grid"
-            onClick={() => setStatsExpanded((current) => !current)}
-          >
-            {statsExpanded ? "Hide" : "Show"}
-          </button>
-        </div>
-
-        {statsExpanded ? (
-          <div id="session-stats-grid" className="mini-stats-grid" aria-label="Session stats">
-            <article className="mini-stat">
-              <span>Accuracy</span>
-              <strong>{accuracy}%</strong>
-            </article>
-            <article className="mini-stat">
-              <span>Visit success</span>
-              <strong>{successRate}%</strong>
-            </article>
-            <article className="mini-stat">
-              <span>Average score</span>
-              <strong>{averageScore}</strong>
-            </article>
-            <article className="mini-stat">
-              <span>Hits landed</span>
-              <strong>{session.totalQualifyingHits}</strong>
-            </article>
-            <article className="mini-stat">
-              <span>Personal best</span>
-              <strong>{session.personalBestStreak}</strong>
-            </article>
-            <article className="mini-stat">
-              <span>Mode target</span>
-              <strong>{mode.successLabel(session.targetSegment)}</strong>
-            </article>
-          </div>
+            <div className="stage-actions">
+              <button type="button" className="utility-button primary large" onClick={() => setJourneyStage("segment")}>
+                Continue to segment
+              </button>
+            </div>
+          </section>
         ) : null}
-      </section>
 
-      <section className="secondary-grid">
-        <section className="card secondary-panel session-panel">
-          <div className="section-heading">
-            <h2>Modes</h2>
-          </div>
-          <ModeSelector
-            selectedMode={session.modeId}
-            targetSegment={session.targetSegment}
-            onSelect={handleModeSelect}
-          />
-        </section>
-      </section>
+        {journeyStage === "segment" ? (
+          <section className="card stage-card selection-stage">
+            <div className="section-heading">
+              <div>
+                <p className="section-label">Step 2</p>
+                <h1>Choose the segment for this block.</h1>
+              </div>
+              <button type="button" className="section-toggle" onClick={() => setJourneyStage("intro")}>
+                Back
+              </button>
+            </div>
 
-      <footer className="card board-footer">
-        <div className="board-footer-copy">
-          <h2>Board Picture</h2>
-          <p className="progress-support">
-            Keep your eyes on {session.targetSegment}, settle into the lane, and let each visit repeat the same picture.
-          </p>
+            <div className="selection-layout">
+              <section className="card secondary-panel segment-panel">
+                <div className="section-heading">
+                  <h2>Segment selector</h2>
+                </div>
+                <label className="segment-control" htmlFor="target-segment">
+                  <span>Target segment</span>
+                  <select
+                    id="target-segment"
+                    className="segment-select"
+                    value={session.targetSegment}
+                    onChange={handleTargetSegmentChange}
+                  >
+                    {targetSegmentOptions.map((segment) => (
+                      <option key={segment} value={segment}>
+                        {segment}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <p className="progress-support">{mode.successLabel(session.targetSegment)}</p>
+              </section>
+
+              <section className="card hero-board-panel selection-preview">
+                <div className="section-heading">
+                  <h2>Current picture</h2>
+                </div>
+                <p className="progress-support">
+                  {mode.name} mode is now set to segment {session.targetSegment}.
+                </p>
+                <DartboardOutline targetSegment={session.targetSegment} />
+              </section>
+            </div>
+
+            <div className="stage-actions">
+              <button type="button" className="utility-button" onClick={() => setJourneyStage("intro")}>
+                Change mode
+              </button>
+              <button type="button" className="utility-button primary large" onClick={() => setJourneyStage("play")}>
+                Start practice
+              </button>
+            </div>
+          </section>
+        ) : null}
+
+        {journeyStage === "play" ? (
+          <section className="stage-flow">
+            <header className="card stage-header">
+              <div className="stage-copy">
+                <p className="section-label">Current inputs</p>
+                <h1>
+                  {mode.name} on {session.targetSegment}
+                </h1>
+                <p className="stage-description">{mode.description(session.targetSegment)}</p>
+              </div>
+
+              <div className="header-actions">
+                <button type="button" className="section-toggle" onClick={() => setJourneyStage("segment")}>
+                  Change segment
+                </button>
+                <button type="button" className="section-toggle" onClick={() => setJourneyStage("intro")}>
+                  Change mode
+                </button>
+              </div>
+            </header>
+
+            <section className="card summary-bar" aria-label="Live stats">
+              {summaryCards.map((card, index) => (
+                <article key={card.label} className="summary-item">
+                  <p className="section-label summary-label">{card.label}</p>
+                  <div className="summary-ring" style={getRingStyle(card.progress, card.color)}>
+                    <div className="summary-ring-inner">
+                      <strong>{card.value}</strong>
+                    </div>
+                  </div>
+                  {index < summaryCards.length - 1 ? <span className="summary-divider" aria-hidden="true" /> : null}
+                </article>
+              ))}
+            </section>
+
+            <section className="play-grid">
+              <div className="play-main">
+                <DartPad
+                  disabled={drillComplete}
+                  disabledMessage={drillComplete ? completionMessage : undefined}
+                  targetSegment={session.targetSegment}
+                  onSelect={handleDart}
+                  onAdvance={handleAdvance}
+                />
+
+                <section className="card visit-stage">
+                  <div className="section-heading">
+                    <h2>Visit stage</h2>
+                    <span className="history-count">{session.currentVisit.length}/3</span>
+                  </div>
+                  <div className="visit-grid" aria-label="Current visit dart slots">
+                    {[0, 1, 2].map((index) => {
+                      const dart = session.currentVisit[index];
+                      const ringMeta = getVisitRingMeta(dart);
+
+                      return (
+                        <article key={index} className="visit-slot">
+                          <div
+                            className="progress-ring progress-ring-visit"
+                            style={getRingStyle(ringMeta.progress, ringMeta.color)}
+                          >
+                            <div className="progress-ring-inner">
+                              <strong>{dart ? formatDartResult(dart, session.targetSegment) : "--"}</strong>
+                            </div>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </section>
+
+                <section className="card secondary-panel controls-panel">
+                  <div className="section-heading">
+                    <h2>Controls panel</h2>
+                  </div>
+                  <div className="action-row">
+                    <button
+                      type="button"
+                      className="utility-button primary"
+                      aria-label="Undo last dart or visit"
+                      onClick={handleUndo}
+                    >
+                      Undo
+                    </button>
+                    <button type="button" className="utility-button" aria-label="Reset game" onClick={handleResetScore}>
+                      Reset
+                    </button>
+                    <button
+                      type="button"
+                      className="utility-button"
+                      aria-label="Start a new session"
+                      onClick={handleNewSession}
+                    >
+                      New session
+                    </button>
+                  </div>
+                </section>
+              </div>
+
+              <aside className="play-side">
+                <section className="card progress-card progress-card-large">
+                  <div className="progress-ring progress-ring-large" style={getRingStyle(sessionProgress, "#2c7df0")}>
+                    <div className="progress-ring-inner">
+                      <strong>
+                        {sessionProgressValue}/{goalVisits}
+                      </strong>
+                      <span>Visits</span>
+                    </div>
+                  </div>
+
+                  <div className="progress-copy">
+                    <p className="section-label">Progress card</p>
+                    <h2>Overall progress</h2>
+                    <p className="progress-support">
+                      {sessionProgressValue}/{goalVisits} visits completed
+                    </p>
+                    <div className="progress-badge-row">
+                      <span className="streak-badge">Streak {session.streak}</span>
+                      <span className={`inline-badge ${drillComplete ? "done" : ""}`}>
+                        {drillComplete ? "Complete" : mode.name}
+                      </span>
+                    </div>
+                  </div>
+                </section>
+
+                <VisitHistory history={session.history} targetSegment={session.targetSegment} />
+              </aside>
+            </section>
+          </section>
+        ) : null}
+
+        {journeyStage === "results" ? (
+          <section className="card stage-card results-stage">
+            <div className="results-hero">
+              <div className="stage-copy">
+                <p className="section-label">Results</p>
+                <h1>Session complete.</h1>
+                <p className="stage-description">{completionMessage}</p>
+                <div className="progress-badge-row">
+                  <span className="streak-badge">{mode.name}</span>
+                  <span className="inline-badge done">Segment {session.targetSegment}</span>
+                </div>
+              </div>
+
+              <div className="progress-ring progress-ring-large" style={getRingStyle(successRate, "#1fb36d")}>
+                <div className="progress-ring-inner">
+                  <strong>{successRate}%</strong>
+                  <span>Visit success</span>
+                </div>
+              </div>
+            </div>
+
+            <section className="results-grid" aria-label="Session stats">
+              {resultStats.map((stat) => (
+                <article key={stat.label} className="mini-stat">
+                  <span>{stat.label}</span>
+                  <strong>{stat.value}</strong>
+                </article>
+              ))}
+            </section>
+
+            <div className="stage-actions">
+              <button type="button" className="utility-button primary large" onClick={handleRestartSegment}>
+                Restart segment
+              </button>
+              <button type="button" className="utility-button large" onClick={handlePickAnotherSegment}>
+                Pick another
+              </button>
+              <button type="button" className="utility-button large" onClick={() => setJourneyStage("intro")}>
+                Change mode
+              </button>
+            </div>
+          </section>
+        ) : null}
+      </main>
+
+      <button
+        type="button"
+        className="options-fab"
+        aria-haspopup="dialog"
+        aria-expanded={optionsOpen}
+        onClick={() => setOptionsOpen(true)}
+      >
+        Options
+      </button>
+
+      {optionsOpen ? (
+        <div
+          className="options-overlay"
+          role="presentation"
+          onClick={handleOverlayClick}
+          onKeyDown={handleOverlayKeyDown}
+        >
+          <section className="card options-popout" role="dialog" aria-modal="true" aria-labelledby="options-title">
+            <div className="section-heading">
+              <div>
+                <p className="section-label">Options</p>
+                <h2 id="options-title">Session settings</h2>
+              </div>
+              <button type="button" className="section-toggle" onClick={handleOverlayClose}>
+                Close
+              </button>
+            </div>
+
+            <div className="options-section">
+              <p className="section-label">Theme</p>
+              <div className="theme-switcher" role="group" aria-label="Theme preference">
+                {(["dark", "light", "device"] as const).map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className={`theme-button ${themePreference === option ? "selected" : ""}`}
+                    aria-pressed={themePreference === option}
+                    onClick={() => setThemePreference(option)}
+                  >
+                    {option === "device" ? "Device" : option[0].toUpperCase() + option.slice(1)}
+                  </button>
+                ))}
+              </div>
+              <p className="progress-support">
+                {themePreference === "device"
+                  ? `Using your device preference. Current theme: ${resolvedTheme}.`
+                  : `Using the ${resolvedTheme} theme.`}
+              </p>
+            </div>
+
+            <div className="options-section">
+              <p className="section-label">Current setup</p>
+              <div className="options-summary">
+                <span className="inline-badge">{mode.name}</span>
+                <span className="inline-badge">Segment {session.targetSegment}</span>
+              </div>
+            </div>
+          </section>
         </div>
-        <DartboardOutline targetSegment={session.targetSegment} />
-      </footer>
-    </main>
+      ) : null}
+    </>
   );
 }
 
