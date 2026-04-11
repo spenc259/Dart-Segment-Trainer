@@ -14,6 +14,7 @@ This file is the standing project brief for work in this repository. Read it bef
 - Create a new branch before making code changes.
 - Use the `codex/` prefix for Codex-created branches unless the user asks for a different naming scheme.
 - Treat one roadmap item as one branch by default.
+- Commit meaningful work on feature branches as progress is made; do not leave substantial completed work uncommitted.
 - If a task starts expanding into a redesign or touching multiple concerns, pause and realign before continuing.
 
 ## Collaboration Defaults
