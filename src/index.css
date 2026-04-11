@@ -149,7 +149,7 @@ button {
   gap: 0.95rem;
   align-content: start;
   background: var(--shell);
-  border: 1px solid var(--shell-border);
+  border: 0;
   border-radius: 40px;
   box-shadow: var(--card-shadow);
 }
