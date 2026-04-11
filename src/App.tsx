@@ -438,31 +438,30 @@ function App() {
         ) : null}
 
         {journeyStage === "play" ? (
-          <section className="stage-flow">
-            <section className="summary-bar" aria-label="Live stats">
-              {summaryCards.map((card) => (
-                <article key={card.label} className="summary-item">
-                  <span className="summary-accent" aria-hidden="true" style={{ background: card.color }} />
-                  <p className="summary-label">{card.label}</p>
-                  <strong className="summary-value">{card.value}</strong>
-                </article>
-              ))}
-            </section>
+            <section className="stage-flow">
+              <section className="summary-bar" aria-label="Live stats">
+                {summaryCards.map((card) => (
+                  <article key={card.label} className="summary-item">
+                    <p className="summary-label">{card.label}</p>
+                    <div className="summary-ring" style={getRingStyle(card.progress, card.color)}>
+                      <div className="summary-ring-inner">
+                        <strong className="summary-value">{card.value}</strong>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </section>
 
             <section className="play-grid">
               <div className="play-main">
                 <DartPad
                   disabled={drillComplete}
-                  disabledMessage={drillComplete ? completionMessage : undefined}
                   targetSegment={session.targetSegment}
                   onSelect={handleDart}
                   onAdvance={handleAdvance}
                 />
 
                 <section className="visit-stage" aria-label="Current visit">
-                  <div className="visit-stage-meta">
-                    <span className="history-count">{session.currentVisit.length}/3</span>
-                  </div>
                   <div className="visit-grid" aria-label="Current visit dart slots">
                     {[0, 1, 2].map((index) => {
                       const dart = session.currentVisit[index];
@@ -524,6 +523,8 @@ function App() {
                   </div>
 
                   <div className="progress-copy">
+                    <p className="section-label">Progress card</p>
+                    <h2>Overall progress</h2>
                     <p className="progress-support">
                       {sessionProgressValue}/{goalVisits} visits completed
                     </p>

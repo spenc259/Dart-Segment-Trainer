@@ -292,6 +292,11 @@ button {
   color: var(--ink);
 }
 
+.section-heading h2 {
+  font-size: 1.25rem;
+  line-height: 1.05;
+}
+
 .stage-copy h1 {
   font-size: 1.6rem;
   line-height: 1.05;
@@ -597,22 +602,34 @@ button {
 .summary-bar {
   min-height: 0;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.4rem;
-  padding: 0;
-  background: transparent;
-  border: 0;
+  gap: 0;
+  padding: 0.35rem 0.2rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--surface-border);
+  border-radius: 22px;
   box-shadow: none;
 }
 
 .summary-item {
   min-width: 0;
-  padding: 0.5rem 0.3rem 0.55rem;
+  padding: 0.4rem 0.2rem 0.45rem;
   display: grid;
   justify-items: center;
-  gap: 0.18rem;
-  border-radius: 16px;
-  background: var(--surface-soft);
+  gap: 0.22rem;
+  border-radius: 0;
+  background: transparent;
   border: 0;
+  position: relative;
+}
+
+.summary-item + .summary-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.3rem;
+  bottom: 0.3rem;
+  width: 1px;
+  background: var(--surface-divider);
 }
 
 .summary-label {
@@ -625,22 +642,16 @@ button {
   font-weight: 700;
 }
 
-.summary-accent {
-  width: 18px;
-  height: 3px;
-  border-radius: 999px;
-}
-
 .summary-value {
   color: var(--ink);
-  font-size: 0.96rem;
+  font-size: 0.88rem;
   line-height: 1;
 }
 
 .summary-ring {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 46px;
+  height: 46px;
   border-radius: 999px;
   display: grid;
   place-items: center;
@@ -649,7 +660,7 @@ button {
 .summary-ring::after {
   content: "";
   position: absolute;
-  inset: 7px;
+  inset: 6px;
   border-radius: inherit;
   background: var(--ring-inner);
   border: 1px solid var(--ring-border);
@@ -667,7 +678,7 @@ button {
 }
 
 .summary-ring-inner strong {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   line-height: 1;
 }
 
@@ -718,12 +729,19 @@ button {
 
 .progress-card {
   align-items: center;
-  padding: 0.25rem 0 0;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 28px;
+  box-shadow: var(--card-shadow);
 }
 
 .progress-copy {
   display: grid;
-  gap: 0.32rem;
+  flex: 1 1 220px;
+  align-content: center;
+  gap: 0.5rem;
 }
 
 .progress-copy h2 {
@@ -731,9 +749,18 @@ button {
   line-height: 1.08;
 }
 
+.progress-card .progress-support {
+  color: var(--accent-muted);
+  font-size: 0.98rem;
+}
+
 .input-panel {
   display: grid;
   gap: 0;
+  padding: 0.1rem 0 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .dart-pad {
@@ -846,7 +873,6 @@ button {
 }
 
 .controls-panel,
-.progress-card,
 .history-panel {
   background: transparent;
   border: 0;
@@ -861,6 +887,14 @@ button {
 
 .history-panel {
   padding: 0.1rem 0 0;
+}
+
+.history-panel .section-heading {
+  align-items: center;
+}
+
+.history-panel-meta {
+  margin-bottom: 0;
 }
 
 .action-row {

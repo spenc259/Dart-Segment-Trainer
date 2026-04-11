@@ -9,8 +9,11 @@ interface VisitHistoryProps {
 export function VisitHistory({ history, targetSegment }: VisitHistoryProps) {
   return (
     <section className="history-panel" aria-label="Visit history">
-      <div className="history-panel-meta">
-        <span className="history-count">{history.length}</span>
+      <div className="section-heading">
+        <h2>Recent visits</h2>
+        <div className="history-panel-meta">
+          <span className="history-count">{history.length}</span>
+        </div>
       </div>
       <div className="history-list">
         {history.length === 0 ? (

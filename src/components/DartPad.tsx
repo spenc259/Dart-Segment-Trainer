@@ -3,22 +3,16 @@ import type { DartResult } from "../types/game";
 
 interface DartPadProps {
   disabled?: boolean;
-  disabledMessage?: string;
   targetSegment: number;
   onSelect: (dart: DartResult) => void;
   onAdvance: () => void;
 }
 
-export function DartPad({ disabled = false, disabledMessage, targetSegment, onSelect, onAdvance }: DartPadProps) {
+export function DartPad({ disabled = false, targetSegment, onSelect, onAdvance }: DartPadProps) {
   const visibleButtons = getDartButtons(targetSegment).filter((button) => button.value !== "OTHER");
 
   return (
-    <section className="card input-panel">
-      {disabledMessage ? (
-        <p className="input-note" role="status" aria-live="polite">
-          {disabledMessage}
-        </p>
-      ) : null}
+    <section className="input-panel">
       <div className="dart-pad">
         {visibleButtons.map((button) => (
           <button
