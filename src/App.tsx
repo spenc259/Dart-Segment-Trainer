@@ -369,24 +369,28 @@ function App() {
         ) : null}
 
         {journeyStage === "segment" ? (
-          <section className="card stage-card selection-stage">
-            <div className="section-heading">
-              <div>
-                <p className="section-label">Step 2</p>
-                <h1>Choose the drill and segment for this block.</h1>
+          <section className="stage-card setup-stage">
+            <section className="intro-hero-surface setup-hero-surface">
+              <div className="section-heading setup-topbar">
+                <div className="stage-copy intro-copy-block setup-copy-block">
+                  <p className="section-label">Step 2</p>
+                  <h1>Shape the session before the first dart.</h1>
+                  <p className="stage-description">
+                    Choose the drill that sets the pace, lock in the segment, and settle the board picture before you
+                    start.
+                  </p>
+                </div>
+                <button type="button" className="section-toggle" onClick={() => setJourneyStage("intro")}>
+                  Back
+                </button>
               </div>
-              <button type="button" className="section-toggle" onClick={() => setJourneyStage("intro")}>
-                Back
-              </button>
-            </div>
+            </section>
 
-            <div className="selection-layout">
+            <div className="selection-layout setup-grid">
               <section className="card intro-mode-panel selection-mode-panel">
-                <div className="section-heading">
-                  <div>
-                    <p className="section-label">Mode selection</p>
-                    <h2>Choose how this block should score.</h2>
-                  </div>
+                <div className="setup-panel-copy">
+                  <p className="section-label">Session mode</p>
+                  <p className="progress-support">Pick the rule set that fits this practice block.</p>
                 </div>
                 <ModeSelector
                   selectedMode={session.modeId}
@@ -395,39 +399,31 @@ function App() {
                 />
               </section>
 
-              <div className="selection-stack">
-                <section className="card secondary-panel segment-panel">
-                  <div className="section-heading">
-                    <h2>Segment selector</h2>
-                  </div>
-                  <label className="segment-control" htmlFor="target-segment">
-                    <span>Target segment</span>
-                    <select
-                      id="target-segment"
-                      className="segment-select"
-                      value={session.targetSegment}
-                      onChange={handleTargetSegmentChange}
-                    >
-                      {targetSegmentOptions.map((segment) => (
-                        <option key={segment} value={segment}>
-                          {segment}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <p className="progress-support">{mode.successLabel(session.targetSegment)}</p>
-                </section>
-
-                <section className="card hero-board-panel selection-preview">
-                  <div className="section-heading">
-                    <h2>Current picture</h2>
-                  </div>
-                  <p className="progress-support">
-                    {mode.name} mode is now set to segment {session.targetSegment}.
-                  </p>
+              <section className="card intro-board-card selection-config-panel">
+                <div className="setup-inline">
+                  <span className="inline-badge">{mode.name}</span>
+                  <span className="inline-badge">Segment {session.targetSegment}</span>
+                </div>
+                <label className="segment-control" htmlFor="target-segment">
+                  <span>Target segment</span>
+                  <select
+                    id="target-segment"
+                    className="segment-select"
+                    value={session.targetSegment}
+                    onChange={handleTargetSegmentChange}
+                  >
+                    {targetSegmentOptions.map((segment) => (
+                      <option key={segment} value={segment}>
+                        {segment}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <p className="progress-support">{mode.successLabel(session.targetSegment)}</p>
+                <div className="intro-board-preview">
                   <DartboardOutline targetSegment={session.targetSegment} />
-                </section>
-              </div>
+                </div>
+              </section>
             </div>
 
             <div className="stage-actions">
@@ -443,16 +439,12 @@ function App() {
 
         {journeyStage === "play" ? (
           <section className="stage-flow">
-            <section className="card summary-bar" aria-label="Live stats">
-              {summaryCards.map((card, index) => (
+            <section className="summary-bar" aria-label="Live stats">
+              {summaryCards.map((card) => (
                 <article key={card.label} className="summary-item">
-                  <p className="section-label summary-label">{card.label}</p>
-                  <div className="summary-ring" style={getRingStyle(card.progress, card.color)}>
-                    <div className="summary-ring-inner">
-                      <strong>{card.value}</strong>
-                    </div>
-                  </div>
-                  {index < summaryCards.length - 1 ? <span className="summary-divider" aria-hidden="true" /> : null}
+                  <span className="summary-accent" aria-hidden="true" style={{ background: card.color }} />
+                  <p className="summary-label">{card.label}</p>
+                  <strong className="summary-value">{card.value}</strong>
                 </article>
               ))}
             </section>
@@ -467,9 +459,8 @@ function App() {
                   onAdvance={handleAdvance}
                 />
 
-                <section className="card visit-stage">
-                  <div className="section-heading">
-                    <h2>Visit stage</h2>
+                <section className="visit-stage" aria-label="Current visit">
+                  <div className="visit-stage-meta">
                     <span className="history-count">{session.currentVisit.length}/3</span>
                   </div>
                   <div className="visit-grid" aria-label="Current visit dart slots">
@@ -493,10 +484,7 @@ function App() {
                   </div>
                 </section>
 
-                <section className="card secondary-panel controls-panel">
-                  <div className="section-heading">
-                    <h2>Controls panel</h2>
-                  </div>
+                <section className="controls-panel" aria-label="Session controls">
                   <div className="action-row">
                     <button
                       type="button"
@@ -522,7 +510,7 @@ function App() {
               </div>
 
               <aside className="play-side">
-                <section className="card progress-card progress-card-large">
+                <section className="progress-card progress-card-large">
                   <div
                     className="progress-ring progress-ring-large"
                     style={getRingStyle(sessionProgress, "var(--progress-ring-color)")}
@@ -536,8 +524,6 @@ function App() {
                   </div>
 
                   <div className="progress-copy">
-                    <p className="section-label">Progress card</p>
-                    <h2>Overall progress</h2>
                     <p className="progress-support">
                       {sessionProgressValue}/{goalVisits} visits completed
                     </p>
