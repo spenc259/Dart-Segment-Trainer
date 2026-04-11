@@ -81,6 +81,26 @@ npm run build
 npm run preview
 ```
 
+## Backend v1
+
+The first backend version now lives in [backend/README.md](/C:/Users/Paul/Projects/DartScorer/backend/README.md) as an isolated service. It does not change the current frontend runtime, and it can be started, tested, and iterated on independently while the existing app continues to use its browser-only flow.
+
+### Run the backend independently
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+### Test the backend independently
+
+```bash
+cd backend
+npm test
+npm run build
+```
+
 ## Project structure
 
 ```text
