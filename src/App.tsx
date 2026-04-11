@@ -543,10 +543,9 @@ function App() {
         ) : null}
 
         {journeyStage === "results" ? (
-          <section className="card stage-card results-stage">
+          <section className="stage-card results-stage">
             <div className="results-hero">
               <div className="stage-copy">
-                <p className="section-label">Results</p>
                 <h1>Session complete.</h1>
                 <p className="stage-description">{completionMessage}</p>
                 <div className="progress-badge-row">
@@ -630,10 +629,10 @@ function App() {
           onKeyDown={handleOverlayKeyDown}
         >
           <section className="card options-popout" role="dialog" aria-modal="true" aria-labelledby="options-title">
-            <div className="section-heading">
-              <div>
-                <p className="section-label">Options</p>
-                <h2 id="options-title">Session settings</h2>
+            <div className="options-topbar">
+              <div className="options-summary" id="options-title">
+                <span className="inline-badge">{mode.name}</span>
+                <span className="inline-badge">Segment {session.targetSegment}</span>
               </div>
               <button type="button" className="section-toggle" onClick={handleOverlayClose}>
                 Close
@@ -641,7 +640,6 @@ function App() {
             </div>
 
             <div className="options-section">
-              <p className="section-label">Theme</p>
               <div className="theme-switcher" role="group" aria-label="Theme preference">
                 {(["dark", "light", "device"] as const).map((option) => (
                   <button
@@ -660,14 +658,6 @@ function App() {
                   ? `Using your device preference. Current theme: ${resolvedTheme}.`
                   : `Using the ${resolvedTheme} theme.`}
               </p>
-            </div>
-
-            <div className="options-section">
-              <p className="section-label">Current setup</p>
-              <div className="options-summary">
-                <span className="inline-badge">{mode.name}</span>
-                <span className="inline-badge">Segment {session.targetSegment}</span>
-              </div>
             </div>
           </section>
         </div>

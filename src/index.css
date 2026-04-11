@@ -239,6 +239,7 @@ button {
 .progress-card,
 .history-item,
 .results-hero,
+.options-topbar,
 .options-summary,
 .stage-actions,
 .progress-badge-row,
@@ -1034,6 +1035,11 @@ button {
 
 .results-stage {
   gap: 1rem;
+  padding: 0.15rem 0 0;
+}
+
+.options-topbar {
+  align-items: center;
 }
 
 .journey-float {
