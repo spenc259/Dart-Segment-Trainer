@@ -76,15 +76,74 @@ const getVisitRingMeta = (dart?: DartResult) => {
       return { progress: 0, color: "#cbd4de" };
     default:
       return { progress: 0, color: "#d7dde5" };
-  }
+  };
 };
 
 const journeySteps: Array<{ id: JourneyStage; label: string }> = [
   { id: "intro", label: "Intro" },
   { id: "segment", label: "Segment" },
-  { id: "play", label: "Inputs" },
+  { id: "play", label: "Practice" },
   { id: "results", label: "Results" },
 ];
+
+const introHighlights = [
+  {
+    title: "Build a repeatable picture",
+    description: "Keep the target clear before each throw and settle into the same visual lane.",
+  },
+  {
+    title: "Choose the right drill",
+    description: "Switch between standard, strict, precision, and endurance practice blocks.",
+  },
+  {
+    title: "Finish with a clear recap",
+    description: "End on a results screen with streak, accuracy, visit success, and restart options.",
+  },
+];
+
+const StatusGlyph = () => (
+  <div className="intro-status" aria-hidden="true">
+    <span className="intro-signal">
+      <i />
+      <i />
+      <i />
+    </span>
+    <span className="intro-wifi" />
+    <span className="intro-battery" />
+  </div>
+);
+
+function JourneyIcon({ step }: { step: JourneyStage }) {
+  switch (step) {
+    case "intro":
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 11.4 12 5l8 6.4V20a1 1 0 0 1-1 1h-4.8v-6h-4.4v6H5a1 1 0 0 1-1-1z" />
+        </svg>
+      );
+    case "segment":
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3a9 9 0 1 0 9 9A9 9 0 0 0 12 3Zm0 3.1a5.9 5.9 0 1 1-5.9 5.9A5.9 5.9 0 0 1 12 6.1Zm0 2.8a3.1 3.1 0 1 0 3.1 3.1A3.1 3.1 0 0 0 12 8.9Z" />
+          <circle cx="12" cy="12" r="1.5" />
+        </svg>
+      );
+    case "play":
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 5.5A2.5 2.5 0 1 1 4.5 8 2.5 2.5 0 0 1 7 5.5Zm0 7A2.5 2.5 0 1 1 4.5 15 2.5 2.5 0 0 1 7 12.5Zm0 7A2.5 2.5 0 1 1 4.5 22 2.5 2.5 0 0 1 7 19.5ZM11.5 7h8a1 1 0 0 1 0 2h-8a1 1 0 0 1 0-2Zm0 7h8a1 1 0 0 1 0 2h-8a1 1 0 0 1 0-2Zm0 7h8a1 1 0 0 1 0 2h-8a1 1 0 0 1 0-2Z" transform="translate(0 -1.5)" />
+        </svg>
+      );
+    case "results":
+      return (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 19a1 1 0 0 1-1-1V7.5a1 1 0 0 1 2 0V17h13a1 1 0 0 1 0 2Zm4.3-3.3a1 1 0 0 1-1-1v-4.2a1 1 0 0 1 2 0v4.2a1 1 0 0 1-1 1Zm4.7 0a1 1 0 0 1-1-1V5.7a1 1 0 1 1 2 0v9a1 1 0 0 1-1 1Zm4.7 0a1 1 0 0 1-1-1v-6.4a1 1 0 0 1 2 0v6.4a1 1 0 0 1-1 1Z" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
 
 function App() {
   const [session, setSession] = useState<SessionStats>(getStoredSession);
@@ -269,56 +328,71 @@ function App() {
     }
   };
 
+  const canOpenResults = drillComplete;
+
   return (
     <>
       <main className="app-shell">
-        <nav className="card journey-nav" aria-label="Practice journey">
-          {journeySteps.map((step, index) => {
-            const currentIndex = journeySteps.findIndex((entry) => entry.id === journeyStage);
-            const isActive = step.id === journeyStage;
-            const isComplete = index < currentIndex;
-
-            return (
-              <div
-                key={step.id}
-                className={`journey-step ${isActive ? "active" : ""} ${isComplete ? "complete" : ""}`}
-              >
-                <span className="journey-index">{index + 1}</span>
-                <span>{step.label}</span>
-              </div>
-            );
-          })}
-        </nav>
-
         {journeyStage === "intro" ? (
-          <section className="card stage-card hero-stage">
-            <div className="stage-copy">
-              <p className="section-label">Twenty Lock</p>
-              <h1>Train through a cleaner journey from setup to session results.</h1>
-              <p className="stage-description">
-                Pick a mode, choose your number, record your visits, then finish on a results screen that helps you
-                decide whether to run it back or move on.
-              </p>
-              <div className="progress-badge-row">
-                <span className="streak-badge">{mode.name} mode</span>
-                <span className="inline-badge">Target {session.targetSegment}</span>
+          <section className="intro-mobile">
+            <div className="intro-device-frame">
+              <div className="intro-topbar" aria-hidden="true">
+                <span className="intro-time">9:41</span>
+                <span className="intro-dynamic-island" />
+                <StatusGlyph />
               </div>
-            </div>
 
-            <div className="hero-layout">
-              <section className="card hero-board-panel">
-                <div className="section-heading">
-                  <h2>Board picture</h2>
+              <div className="intro-hero">
+                <div className="intro-emblem-shell">
+                  <div className="intro-emblem">
+                    <DartboardOutline targetSegment={session.targetSegment} />
+                  </div>
                 </div>
-                <p className="progress-support">
-                  Keep the picture of {session.targetSegment} clear before you step into the throw.
-                </p>
-                <DartboardOutline targetSegment={session.targetSegment} />
+
+                <div className="stage-copy intro-copy-block">
+                  <p className="section-label">Ready to practice</p>
+                  <h1>Lock in a cleaner darts session.</h1>
+                  <p className="stage-description">
+                    Pick your drill, focus on one number, and finish with a recap that tells you whether to run it
+                    back or move on.
+                  </p>
+                </div>
+              </div>
+
+              <section className="card intro-feature-card">
+                {introHighlights.map((item) => (
+                  <article key={item.title} className="intro-feature-item">
+                    <span className="intro-feature-icon" aria-hidden="true" />
+                    <div>
+                      <strong>{item.title}</strong>
+                      <p>{item.description}</p>
+                    </div>
+                  </article>
+                ))}
               </section>
 
-              <section className="card secondary-panel">
+              <section className="card intro-board-card">
                 <div className="section-heading">
-                  <h2>Mode selection</h2>
+                  <div>
+                    <p className="section-label">Board picture</p>
+                    <h2>Current target: {session.targetSegment}</h2>
+                  </div>
+                  <span className="inline-badge">{mode.name}</span>
+                </div>
+                <p className="progress-support">
+                  Keep the visual picture for {session.targetSegment} settled before the first dart leaves your hand.
+                </p>
+                <div className="intro-board-preview">
+                  <DartboardOutline targetSegment={session.targetSegment} />
+                </div>
+              </section>
+
+              <section className="card intro-mode-panel">
+                <div className="section-heading">
+                  <div>
+                    <p className="section-label">Mode selection</p>
+                    <h2>Choose how this block should score.</h2>
+                  </div>
                 </div>
                 <ModeSelector
                   selectedMode={session.modeId}
@@ -326,12 +400,18 @@ function App() {
                   onSelect={handleModeSelect}
                 />
               </section>
-            </div>
 
-            <div className="stage-actions">
-              <button type="button" className="utility-button primary large" onClick={() => setJourneyStage("segment")}>
-                Continue to segment
-              </button>
+              <div className="intro-cta-wrap">
+                <button
+                  type="button"
+                  className="utility-button primary intro-cta-button"
+                  onClick={() => setJourneyStage("segment")}
+                >
+                  Start session
+                </button>
+              </div>
+
+              <div className="intro-home-indicator" aria-hidden="true" />
             </div>
           </section>
         ) : null}
@@ -568,6 +648,27 @@ function App() {
           </section>
         ) : null}
       </main>
+
+      <nav className="journey-float" aria-label="Practice journey">
+        {journeySteps.map((step) => {
+          const isActive = step.id === journeyStage;
+          const isDisabled = step.id === "results" && !canOpenResults;
+
+          return (
+            <button
+              key={step.id}
+              type="button"
+              className={`journey-float-button ${isActive ? "active" : ""}`}
+              aria-label={step.label}
+              aria-current={isActive ? "page" : undefined}
+              disabled={isDisabled}
+              onClick={() => setJourneyStage(step.id)}
+            >
+              <JourneyIcon step={step.id} />
+            </button>
+          );
+        })}
+      </nav>
 
       <button
         type="button"
