@@ -331,7 +331,7 @@ function App() {
       <main className="app-shell">
         {journeyStage === "intro" ? (
           <section className="intro-mobile">
-            <section className="intro-hero-card">
+            <section className="intro-hero-surface">
               <div className="intro-hero">
                 <div className="intro-emblem-shell" aria-hidden="true">
                   <div className="intro-emblem">
@@ -352,9 +352,9 @@ function App() {
               </div>
             </section>
 
-            <section className="card intro-feature-card">
+            <section className="intro-feature-grid">
               {introHighlights.map((item) => (
-                <article key={item.title} className="intro-feature-item">
+                <article key={item.title} className="card intro-feature-card">
                   <span className="intro-feature-icon" aria-hidden="true" />
                   <div>
                     <strong>{item.title}</strong>

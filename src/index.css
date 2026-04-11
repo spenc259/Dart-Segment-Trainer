@@ -11,8 +11,8 @@
   -moz-osx-font-smoothing: grayscale;
   --ink: #eef4f7;
   --ink-soft: #94a3b2;
-  --page-bg: radial-gradient(circle at top, #21303c 0%, #121920 35%, #090d11 100%);
-  --shell: linear-gradient(180deg, rgba(21, 30, 38, 0.98), rgba(10, 14, 19, 0.98));
+  --page-bg: #0d141c;
+  --shell: rgba(18, 27, 36, 0.98);
   --shell-border: rgba(161, 179, 193, 0.14);
   --card: rgba(19, 27, 34, 0.92);
   --card-border: rgba(150, 168, 183, 0.16);
@@ -42,17 +42,16 @@
   --dart-miss-bg: rgba(66, 77, 88, 0.4);
   --dart-advance-bg: rgba(28, 92, 53, 0.32);
   --overlay: rgba(5, 9, 13, 0.68);
-  --intro-hero-surface: linear-gradient(180deg, rgba(33, 45, 57, 0.98), rgba(18, 28, 38, 0.98));
-  --intro-hero-border: rgba(145, 163, 179, 0.18);
+  --intro-hero-surface: transparent;
+  --intro-hero-border: transparent;
   --intro-hero-ink: var(--ink);
   --intro-hero-muted: var(--ink-soft);
   --intro-card-surface: rgba(255, 255, 255, 0.04);
   --intro-card-border: rgba(150, 168, 183, 0.14);
   --intro-preview-surface: rgba(255, 255, 255, 0.04);
   --float-surface: rgba(19, 27, 34, 0.94);
-  --float-border: rgba(150, 168, 183, 0.18);
   --float-icon: #9fafbd;
-  --float-active-surface: linear-gradient(180deg, rgba(106, 169, 255, 0.26), rgba(77, 149, 255, 0.18));
+  --float-active-surface: rgba(106, 169, 255, 0.2);
   --float-active-icon: #d7ebff;
 }
 
@@ -62,8 +61,8 @@
   background: #e8f0f8;
   --ink: #16212b;
   --ink-soft: #667483;
-  --page-bg: linear-gradient(180deg, #eef5fb 0%, #dfeaf6 100%);
-  --shell: linear-gradient(180deg, rgba(239, 246, 252, 0.98), rgba(228, 238, 248, 0.98));
+  --page-bg: #eef5fb;
+  --shell: rgba(232, 241, 249, 0.98);
   --shell-border: rgba(147, 175, 203, 0.2);
   --card: rgba(255, 255, 255, 0.94);
   --card-border: rgba(196, 214, 232, 0.88);
@@ -93,17 +92,16 @@
   --dart-miss-bg: #edf1f5;
   --dart-advance-bg: #e6f4f0;
   --overlay: rgba(227, 237, 247, 0.76);
-  --intro-hero-surface: linear-gradient(180deg, rgba(231, 241, 252, 0.96), rgba(244, 247, 251, 0.96));
-  --intro-hero-border: rgba(193, 212, 231, 0.9);
+  --intro-hero-surface: transparent;
+  --intro-hero-border: transparent;
   --intro-hero-ink: #10161f;
   --intro-hero-muted: #5d6a78;
   --intro-card-surface: rgba(255, 255, 255, 0.9);
   --intro-card-border: rgba(196, 214, 232, 0.8);
   --intro-preview-surface: rgba(237, 243, 249, 0.9);
   --float-surface: rgba(255, 255, 255, 0.94);
-  --float-border: rgba(200, 217, 233, 0.95);
   --float-icon: #687480;
-  --float-active-surface: linear-gradient(180deg, #9cd2ff, #7ebeff);
+  --float-active-surface: #a8d2ff;
   --float-active-icon: #2576f3;
 }
 
@@ -204,7 +202,8 @@ button {
 .intro-copy-block,
 .intro-board-card,
 .intro-mode-panel,
-.intro-hero-card {
+.intro-hero-surface,
+.intro-feature-grid {
   display: grid;
   gap: 0.95rem;
 }
@@ -242,7 +241,7 @@ button {
 .history-meta small,
 .empty-state,
 .input-note,
-.intro-feature-item p {
+.intro-feature-card p {
   margin: 0;
   color: var(--ink-soft);
 }
@@ -289,12 +288,11 @@ button {
   fill: var(--blue);
 }
 
-.intro-hero-card {
-  padding: 1.2rem;
-  border-radius: 32px;
+.intro-hero-surface {
+  padding: 1.2rem 0.55rem 0.4rem;
   background: var(--intro-hero-surface);
-  border: 1px solid var(--intro-hero-border);
-  box-shadow: var(--card-shadow);
+  border: 0;
+  box-shadow: none;
 }
 
 .intro-hero {
@@ -309,10 +307,8 @@ button {
   height: 132px;
   padding: 12px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #3f9dff, #2576f3);
-  box-shadow:
-    0 14px 28px rgba(44, 125, 240, 0.24),
-    inset 0 2px 0 rgba(255, 255, 255, 0.36);
+  background: #2f80ed;
+  box-shadow: 0 14px 28px rgba(44, 125, 240, 0.2);
 }
 
 .intro-emblem {
@@ -358,18 +354,18 @@ button {
   border: 1px solid var(--intro-card-border);
 }
 
-.intro-feature-card {
-  gap: 0.7rem;
+.intro-feature-grid {
+  gap: 0.85rem;
 }
 
-.intro-feature-item {
+.intro-feature-card {
   display: grid;
   grid-template-columns: 48px 1fr;
   gap: 0.8rem;
   align-items: start;
 }
 
-.intro-feature-item strong,
+.intro-feature-card strong,
 .intro-board-card h2,
 .intro-mode-panel h2 {
   color: #11161f;
@@ -379,7 +375,7 @@ button {
   width: 48px;
   height: 48px;
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(67, 150, 255, 0.16), rgba(67, 150, 255, 0.06));
+  background: #dbe9f9;
   position: relative;
 }
 
@@ -450,7 +446,7 @@ button {
   min-height: 60px;
   border-radius: 20px;
   font-size: 1.05rem;
-  background: linear-gradient(180deg, #4396ff, #2576f3);
+  background: #2f80ed;
   color: #f7fbff;
   border-color: transparent;
 }
@@ -884,7 +880,6 @@ button {
   padding: 0.6rem;
   border-radius: 28px;
   background: var(--float-surface);
-  border: 1px solid var(--float-border);
   box-shadow:
     0 20px 44px rgba(0, 0, 0, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -912,7 +907,7 @@ button {
 .journey-float-button.active {
   background: var(--float-active-surface);
   color: var(--float-active-icon);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.44);
+  box-shadow: none;
 }
 
 .options-overlay {
