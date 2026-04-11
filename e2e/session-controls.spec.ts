@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import {
   enterDarts,
+  expectPlayStage,
   expectSummaryValue,
   getStoredSession,
   gotoApp,
@@ -54,7 +55,7 @@ test("reset restarts the segment while preserving the personal best in storage",
   await enterDarts(page, ["Single", "Single", "Advance"]);
   await page.getByRole("button", { name: "Reset game" }).click();
 
-  await expect(page.getByRole("heading", { name: "Standard on 17" })).toBeVisible();
+  await expectPlayStage(page, { mode: "Standard", segment: 17 });
   await expectSummaryValue(page, "Score", 0);
   await expectSummaryValue(page, "Streak", 0);
   await expectSummaryValue(page, "Turn", 1);
@@ -73,7 +74,8 @@ test("new session returns to intro with a fresh persisted session", async ({ pag
   await page.getByRole("button", { name: "Start a new session" }).click();
 
   await expect(page.getByRole("heading", { name: "Lock in a cleaner darts session." })).toBeVisible();
-  await expect(page.getByText("Current target: 15")).toBeVisible();
+  await page.getByRole("button", { name: "Set up session" }).click();
+  await expect(page.getByLabel("Target segment")).toHaveValue("15");
   await expect(page.getByRole("button", { name: /^Strict\b/i })).toHaveAttribute("aria-pressed", "true");
 
   const session = await getStoredSession(page);

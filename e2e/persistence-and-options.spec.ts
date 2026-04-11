@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import {
   buildSession,
   enterDarts,
+  expectPlayStage,
   getStoredSession,
   getStoredThemePreference,
   gotoApp,
@@ -15,7 +16,7 @@ test("reloading preserves an in-progress practice session and returns to the pla
   await enterDarts(page, ["Single"]);
   await page.reload();
 
-  await expect(page.getByRole("heading", { name: "Standard on 20" })).toBeVisible();
+  await expectPlayStage(page, { mode: "Standard", segment: 20 });
   await expect(page.getByText("1/3")).toBeVisible();
   await expect(page.getByText("S20")).toBeVisible();
 });
@@ -65,7 +66,7 @@ test("restart segment from results returns to practice with preserved personal b
   await expect(page.getByRole("heading", { name: "Session complete." })).toBeVisible();
   await page.getByRole("button", { name: "Restart segment" }).click();
 
-  await expect(page.getByRole("heading", { name: "Standard on 14" })).toBeVisible();
+  await expectPlayStage(page, { mode: "Standard", segment: 14 });
 
   const session = await getStoredSession(page);
   expect(session.visitsPlayed).toBe(0);
@@ -87,9 +88,9 @@ test("pick another from results returns to segment selection", async ({ page }) 
   );
 
   await expect(page.getByRole("heading", { name: "Session complete." })).toBeVisible();
-  await page.getByRole("button", { name: "Pick another" }).click();
+  await page.getByRole("button", { name: "Edit setup" }).click();
 
-  await expect(page.getByRole("heading", { name: "Choose the segment for this block." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Choose the drill and segment for this block." })).toBeVisible();
   await expect(page.getByLabel("Target segment")).toHaveValue("12");
 });
 
@@ -106,8 +107,9 @@ test("change mode from results returns to the intro stage", async ({ page }) => 
   );
 
   await expect(page.getByRole("heading", { name: "Session complete." })).toBeVisible();
-  await page.getByRole("button", { name: "Change mode" }).click();
+  await page.getByRole("button", { name: "Back to intro" }).click();
 
   await expect(page.getByRole("heading", { name: "Lock in a cleaner darts session." })).toBeVisible();
+  await page.getByRole("button", { name: "Set up session" }).click();
   await expect(page.getByRole("button", { name: /^Endurance\b/i })).toHaveAttribute("aria-pressed", "true");
 });

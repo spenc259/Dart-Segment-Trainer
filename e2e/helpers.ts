@@ -130,19 +130,19 @@ export const startPractice = async (
   const mode = options.mode ?? "Standard";
   const segment = options.segment ?? 20;
 
+  await page.getByRole("button", { name: "Set up session" }).click();
+  await expect(page.getByRole("heading", { name: "Choose the drill and segment for this block." })).toBeVisible();
+
   if (mode !== "Standard") {
     await page.getByRole("button", { name: new RegExp(`^${mode}\\b`, "i") }).click();
   }
-
-  await page.getByRole("button", { name: "Start session" }).click();
-  await expect(page.getByRole("heading", { name: "Choose the segment for this block." })).toBeVisible();
 
   if (segment !== 20) {
     await page.getByLabel("Target segment").selectOption(String(segment));
   }
 
   await page.getByRole("button", { name: "Start practice" }).click();
-  await expect(page.getByRole("heading", { name: new RegExp(`${mode} on ${segment}`, "i") })).toBeVisible();
+  await expectPlayStage(page, { mode, segment });
 };
 
 export const enterDarts = async (page: Page, darts: DartButtonName[]) => {
@@ -161,4 +161,14 @@ export const resultStat = (page: Page, label: string): Locator => {
 
 export const historyItem = (page: Page, index = 0): Locator => {
   return page.locator(".history-item").nth(index);
+};
+
+export const expectPlayStage = async (
+  page: Page,
+  options: { mode: ModeName; segment: number },
+) => {
+  await expect(
+    page.getByRole("button", { name: new RegExp(`^Single\\b.*${options.segment}`, "i") }),
+  ).toBeVisible();
+  await expect(page.locator(".progress-card").getByText(options.mode, { exact: true })).toBeVisible();
 };

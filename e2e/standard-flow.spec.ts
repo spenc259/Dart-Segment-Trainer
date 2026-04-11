@@ -3,6 +3,7 @@ import {
   buildSession,
   buildVisit,
   enterDarts,
+  expectPlayStage,
   expectSummaryValue,
   gotoApp,
   historyItem,
@@ -60,7 +61,7 @@ test("covers the standard journey from intro to results with core scoring checks
   );
 
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Standard on 19" })).toBeVisible();
+  await expectPlayStage(page, { mode: "Standard", segment: 19 });
 
   await enterDarts(page, ["Single", "Treble", "Advance"]);
 
