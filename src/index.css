@@ -148,10 +148,10 @@ button {
   display: grid;
   gap: 0.95rem;
   align-content: start;
-  background: var(--shell);
+  background: transparent;
   border: 0;
   border-radius: 40px;
-  box-shadow: var(--card-shadow);
+  box-shadow: none;
 }
 
 .card {
