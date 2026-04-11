@@ -81,9 +81,39 @@ npm run build
 npm run preview
 ```
 
+## End-to-end testing
+
+### 1. Install Playwright browsers
+
+```bash
+npx playwright install chromium webkit
+```
+
+### 2. Run the mobile-first E2E suite
+
+```bash
+npm run test:e2e
+```
+
+### 3. Useful local debugging commands
+
+```bash
+npm run test:e2e:headed
+npm run test:e2e:ui
+npm run test:e2e:report
+```
+
+The suite runs against local Chromium and WebKit mobile device profiles. GitHub Actions also runs the same Playwright suite automatically on pushes and pull requests.
+
 ## Project structure
 
 ```text
+e2e/
+  helpers.ts
+  mode-rules.spec.ts
+  persistence-and-options.spec.ts
+  session-controls.spec.ts
+  standard-flow.spec.ts
 src/
   components/
     DartboardOutline.tsx
@@ -98,6 +128,8 @@ src/
   App.tsx
   index.css
   main.tsx
+playwright.config.ts
+.github/workflows/e2e.yml
 ```
 
 ## Deployment
