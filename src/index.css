@@ -42,28 +42,40 @@
   --dart-miss-bg: rgba(66, 77, 88, 0.4);
   --dart-advance-bg: rgba(28, 92, 53, 0.32);
   --overlay: rgba(5, 9, 13, 0.68);
+  --intro-hero-surface: linear-gradient(180deg, rgba(33, 45, 57, 0.98), rgba(18, 28, 38, 0.98));
+  --intro-hero-border: rgba(145, 163, 179, 0.18);
+  --intro-hero-ink: var(--ink);
+  --intro-hero-muted: var(--ink-soft);
+  --intro-card-surface: rgba(255, 255, 255, 0.04);
+  --intro-card-border: rgba(150, 168, 183, 0.14);
+  --intro-preview-surface: rgba(255, 255, 255, 0.04);
+  --float-surface: rgba(19, 27, 34, 0.94);
+  --float-border: rgba(150, 168, 183, 0.18);
+  --float-icon: #9fafbd;
+  --float-active-surface: linear-gradient(180deg, rgba(106, 169, 255, 0.26), rgba(77, 149, 255, 0.18));
+  --float-active-icon: #d7ebff;
 }
 
 :root[data-theme="light"] {
   color-scheme: light;
-  color: #1b2530;
-  background: #efeae1;
-  --ink: #18212a;
-  --ink-soft: #6f7c88;
-  --page-bg: linear-gradient(180deg, #efe8d7 0%, #e4eddc 100%);
-  --shell: linear-gradient(180deg, rgba(245, 241, 232, 0.98), rgba(234, 243, 229, 0.98));
-  --shell-border: rgba(109, 127, 104, 0.14);
-  --card: rgba(255, 251, 243, 0.94);
-  --card-border: rgba(163, 177, 150, 0.25);
-  --card-shadow: 0 24px 60px rgba(67, 80, 63, 0.12);
-  --surface-soft: rgba(245, 248, 241, 0.98);
-  --surface-strong: rgba(255, 255, 252, 0.98);
-  --surface-selected: rgba(223, 236, 214, 0.98);
-  --surface-selected-border: rgba(95, 132, 92, 0.3);
-  --surface-border: rgba(150, 165, 140, 0.22);
-  --surface-divider: rgba(150, 165, 140, 0.22);
-  --ring-inner: #fffdf8;
-  --ring-border: rgba(181, 193, 171, 0.45);
+  color: #15202b;
+  background: #e8f0f8;
+  --ink: #16212b;
+  --ink-soft: #667483;
+  --page-bg: linear-gradient(180deg, #eef5fb 0%, #dfeaf6 100%);
+  --shell: linear-gradient(180deg, rgba(239, 246, 252, 0.98), rgba(228, 238, 248, 0.98));
+  --shell-border: rgba(147, 175, 203, 0.2);
+  --card: rgba(255, 255, 255, 0.94);
+  --card-border: rgba(196, 214, 232, 0.88);
+  --card-shadow: 0 24px 60px rgba(68, 96, 123, 0.12);
+  --surface-soft: rgba(247, 251, 255, 0.98);
+  --surface-strong: rgba(240, 247, 253, 0.98);
+  --surface-selected: rgba(223, 238, 255, 0.98);
+  --surface-selected-border: rgba(87, 148, 223, 0.28);
+  --surface-border: rgba(193, 212, 231, 0.84);
+  --surface-divider: rgba(193, 212, 231, 0.72);
+  --ring-inner: #ffffff;
+  --ring-border: rgba(182, 204, 226, 0.72);
   --blue: #2c7df0;
   --green: #1fb36d;
   --amber: #f4a11a;
@@ -80,7 +92,19 @@
   --dart-other-bg: #e9f1fb;
   --dart-miss-bg: #edf1f5;
   --dart-advance-bg: #e6f4f0;
-  --overlay: rgba(232, 224, 210, 0.7);
+  --overlay: rgba(227, 237, 247, 0.76);
+  --intro-hero-surface: linear-gradient(180deg, rgba(231, 241, 252, 0.96), rgba(244, 247, 251, 0.96));
+  --intro-hero-border: rgba(193, 212, 231, 0.9);
+  --intro-hero-ink: #10161f;
+  --intro-hero-muted: #5d6a78;
+  --intro-card-surface: rgba(255, 255, 255, 0.9);
+  --intro-card-border: rgba(196, 214, 232, 0.8);
+  --intro-preview-surface: rgba(237, 243, 249, 0.9);
+  --float-surface: rgba(255, 255, 255, 0.94);
+  --float-border: rgba(200, 217, 233, 0.95);
+  --float-icon: #687480;
+  --float-active-surface: linear-gradient(180deg, #9cd2ff, #7ebeff);
+  --float-active-icon: #2576f3;
 }
 
 * {
@@ -176,11 +200,11 @@ button {
 .hero-board-panel,
 .results-grid,
 .intro-mobile,
-.intro-device-frame,
 .intro-hero,
 .intro-copy-block,
 .intro-board-card,
-.intro-mode-panel {
+.intro-mode-panel,
+.intro-hero-card {
   display: grid;
   gap: 0.95rem;
 }
@@ -265,100 +289,17 @@ button {
   fill: var(--blue);
 }
 
-.intro-device-frame {
-  padding: 0.8rem 0.8rem 1.15rem;
-  border-radius: 34px;
-  background: linear-gradient(180deg, rgba(231, 241, 252, 0.94), rgba(244, 247, 251, 0.9));
-  color: #0f1520;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
-}
-
-:root[data-theme="dark"] .intro-device-frame {
-  background: linear-gradient(180deg, rgba(223, 232, 243, 0.94), rgba(241, 244, 248, 0.9));
-}
-
-.intro-topbar {
-  padding: 0 0.45rem;
-  min-height: 32px;
-  color: #10151d;
-  font-weight: 700;
-}
-
-.intro-time {
-  font-size: 0.95rem;
-}
-
-.intro-dynamic-island {
-  width: 122px;
-  height: 32px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.03);
-}
-
-.intro-status {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.intro-signal {
-  display: inline-flex;
-  align-items: end;
-  gap: 2px;
-  height: 12px;
-}
-
-.intro-signal i {
-  display: block;
-  width: 2px;
-  border-radius: 999px;
-  background: #11161f;
-}
-
-.intro-signal i:nth-child(1) {
-  height: 5px;
-}
-
-.intro-signal i:nth-child(2) {
-  height: 8px;
-}
-
-.intro-signal i:nth-child(3) {
-  height: 11px;
-}
-
-.intro-wifi {
-  width: 12px;
-  height: 12px;
-  border: 2px solid #11161f;
-  border-top-color: transparent;
-  border-left-color: transparent;
-  transform: rotate(-45deg);
-  border-radius: 0 0 10px 0;
-}
-
-.intro-battery {
-  position: relative;
-  width: 22px;
-  height: 11px;
-  border-radius: 4px;
-  border: 2px solid #11161f;
-}
-
-.intro-battery::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  right: -4px;
-  width: 2px;
-  height: 5px;
-  border-radius: 2px;
-  background: #11161f;
+.intro-hero-card {
+  padding: 1.2rem;
+  border-radius: 32px;
+  background: var(--intro-hero-surface);
+  border: 1px solid var(--intro-hero-border);
+  box-shadow: var(--card-shadow);
 }
 
 .intro-hero {
-  padding-top: 0.5rem;
+  min-height: 0;
+  padding-block: 0.25rem 0.1rem;
   justify-items: center;
   text-align: center;
 }
@@ -384,7 +325,14 @@ button {
   place-items: center;
 }
 
-.intro-emblem .dartboard-outline {
+.intro-emblem-board {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.intro-emblem-board .dartboard-outline {
   max-width: 96px;
   color: #7f8b96;
 }
@@ -394,21 +342,20 @@ button {
 }
 
 .intro-copy-block h1 {
-  color: #0f1520;
+  color: var(--intro-hero-ink);
   font-size: 2rem;
 }
 
 .intro-copy-block .section-label,
 .intro-copy-block .stage-description {
-  color: #5e6874;
+  color: var(--intro-hero-muted);
 }
 
 .intro-feature-card,
 .intro-board-card,
 .intro-mode-panel {
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(205, 216, 229, 0.72);
-  box-shadow: none;
+  background: var(--intro-card-surface);
+  border: 1px solid var(--intro-card-border);
 }
 
 .intro-feature-card {
@@ -467,7 +414,7 @@ button {
 .intro-board-preview {
   padding: 0.4rem;
   border-radius: 22px;
-  background: rgba(237, 243, 249, 0.9);
+  background: var(--intro-preview-surface);
 }
 
 .intro-board-preview .dartboard-outline {
@@ -506,14 +453,6 @@ button {
   background: linear-gradient(180deg, #4396ff, #2576f3);
   color: #f7fbff;
   border-color: transparent;
-}
-
-.intro-home-indicator {
-  width: 132px;
-  height: 5px;
-  border-radius: 999px;
-  margin: 0.35rem auto 0;
-  background: rgba(17, 22, 31, 0.96);
 }
 
 .streak-badge,
@@ -941,7 +880,8 @@ button {
   transform: translateX(-50%);
   padding: 0.6rem;
   border-radius: 28px;
-  background: rgba(252, 252, 252, 0.94);
+  background: var(--float-surface);
+  border: 1px solid var(--float-border);
   box-shadow:
     0 20px 44px rgba(0, 0, 0, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -956,7 +896,7 @@ button {
   display: grid;
   place-items: center;
   background: transparent;
-  color: #5f6871;
+  color: var(--float-icon);
 }
 
 .journey-float-button svg {
@@ -966,24 +906,9 @@ button {
 }
 
 .journey-float-button.active {
-  background: linear-gradient(180deg, #9cd2ff, #7ebeff);
-  color: #2576f3;
+  background: var(--float-active-surface);
+  color: var(--float-active-icon);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.44);
-}
-
-.options-fab {
-  position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  min-height: 52px;
-  padding: 0.9rem 1.05rem;
-  border-radius: 999px;
-  background: var(--surface-selected);
-  color: var(--ink);
-  border: 1px solid var(--surface-selected-border);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
-  z-index: 21;
-  font-weight: 800;
 }
 
 .options-overlay {
@@ -1013,7 +938,6 @@ button {
 .utility-button:hover,
 .section-toggle:hover,
 .theme-button:hover,
-.options-fab:hover,
 .journey-float-button:hover {
   transform: translateY(-1px);
 }
@@ -1023,7 +947,6 @@ button {
 .utility-button:active,
 .section-toggle:active,
 .theme-button:active,
-.options-fab:active,
 .journey-float-button:active {
   transform: translateY(1px);
 }
@@ -1074,11 +997,6 @@ button {
   }
 
   .journey-float {
-    bottom: 1.35rem;
-  }
-
-  .options-fab {
-    right: 1.5rem;
     bottom: 1.35rem;
   }
 
