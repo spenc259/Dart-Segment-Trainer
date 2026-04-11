@@ -101,18 +101,6 @@ const introHighlights = [
   },
 ];
 
-const StatusGlyph = () => (
-  <div className="intro-status" aria-hidden="true">
-    <span className="intro-signal">
-      <i />
-      <i />
-      <i />
-    </span>
-    <span className="intro-wifi" />
-    <span className="intro-battery" />
-  </div>
-);
-
 function JourneyIcon({ step }: { step: JourneyStage }) {
   switch (step) {
     case "intro":
@@ -143,6 +131,14 @@ function JourneyIcon({ step }: { step: JourneyStage }) {
     default:
       return null;
   }
+}
+
+function OptionsIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M10.7 3h2.6l.5 2.2a7 7 0 0 1 1.8.8l2-1.1 1.8 1.8-1.1 2a7 7 0 0 1 .8 1.8L21 10.7v2.6l-2.2.5a7 7 0 0 1-.8 1.8l1.1 2-1.8 1.8-2-1.1a7 7 0 0 1-1.8.8L13.3 21h-2.6l-.5-2.2a7 7 0 0 1-1.8-.8l-2 1.1-1.8-1.8 1.1-2a7 7 0 0 1-.8-1.8L3 13.3v-2.6l2.2-.5a7 7 0 0 1 .8-1.8l-1.1-2 1.8-1.8 2 1.1a7 7 0 0 1 1.8-.8Zm1.3 6.3A2.7 2.7 0 1 0 14.7 12 2.7 2.7 0 0 0 12 9.3Z" />
+    </svg>
+  );
 }
 
 function App() {
@@ -335,17 +331,13 @@ function App() {
       <main className="app-shell">
         {journeyStage === "intro" ? (
           <section className="intro-mobile">
-            <div className="intro-device-frame">
-              <div className="intro-topbar" aria-hidden="true">
-                <span className="intro-time">9:41</span>
-                <span className="intro-dynamic-island" />
-                <StatusGlyph />
-              </div>
-
+            <section className="intro-hero-card">
               <div className="intro-hero">
-                <div className="intro-emblem-shell">
+                <div className="intro-emblem-shell" aria-hidden="true">
                   <div className="intro-emblem">
-                    <DartboardOutline targetSegment={session.targetSegment} />
+                    <div className="intro-emblem-board">
+                      <DartboardOutline targetSegment={session.targetSegment} />
+                    </div>
                   </div>
                 </div>
 
@@ -358,60 +350,58 @@ function App() {
                   </p>
                 </div>
               </div>
+            </section>
 
-              <section className="card intro-feature-card">
-                {introHighlights.map((item) => (
-                  <article key={item.title} className="intro-feature-item">
-                    <span className="intro-feature-icon" aria-hidden="true" />
-                    <div>
-                      <strong>{item.title}</strong>
-                      <p>{item.description}</p>
-                    </div>
-                  </article>
-                ))}
-              </section>
-
-              <section className="card intro-board-card">
-                <div className="section-heading">
+            <section className="card intro-feature-card">
+              {introHighlights.map((item) => (
+                <article key={item.title} className="intro-feature-item">
+                  <span className="intro-feature-icon" aria-hidden="true" />
                   <div>
-                    <p className="section-label">Board picture</p>
-                    <h2>Current target: {session.targetSegment}</h2>
+                    <strong>{item.title}</strong>
+                    <p>{item.description}</p>
                   </div>
-                  <span className="inline-badge">{mode.name}</span>
-                </div>
-                <p className="progress-support">
-                  Keep the visual picture for {session.targetSegment} settled before the first dart leaves your hand.
-                </p>
-                <div className="intro-board-preview">
-                  <DartboardOutline targetSegment={session.targetSegment} />
-                </div>
-              </section>
+                </article>
+              ))}
+            </section>
 
-              <section className="card intro-mode-panel">
-                <div className="section-heading">
-                  <div>
-                    <p className="section-label">Mode selection</p>
-                    <h2>Choose how this block should score.</h2>
-                  </div>
+            <section className="card intro-board-card">
+              <div className="section-heading">
+                <div>
+                  <p className="section-label">Board picture</p>
+                  <h2>Current target: {session.targetSegment}</h2>
                 </div>
-                <ModeSelector
-                  selectedMode={session.modeId}
-                  targetSegment={session.targetSegment}
-                  onSelect={handleModeSelect}
-                />
-              </section>
-
-              <div className="intro-cta-wrap">
-                <button
-                  type="button"
-                  className="utility-button primary intro-cta-button"
-                  onClick={() => setJourneyStage("segment")}
-                >
-                  Start session
-                </button>
+                <span className="inline-badge">{mode.name}</span>
               </div>
+              <p className="progress-support">
+                Keep the visual picture for {session.targetSegment} settled before the first dart leaves your hand.
+              </p>
+              <div className="intro-board-preview">
+                <DartboardOutline targetSegment={session.targetSegment} />
+              </div>
+            </section>
 
-              <div className="intro-home-indicator" aria-hidden="true" />
+            <section className="card intro-mode-panel">
+              <div className="section-heading">
+                <div>
+                  <p className="section-label">Mode selection</p>
+                  <h2>Choose how this block should score.</h2>
+                </div>
+              </div>
+              <ModeSelector
+                selectedMode={session.modeId}
+                targetSegment={session.targetSegment}
+                onSelect={handleModeSelect}
+              />
+            </section>
+
+            <div className="intro-cta-wrap">
+              <button
+                type="button"
+                className="utility-button primary intro-cta-button"
+                onClick={() => setJourneyStage("segment")}
+              >
+                Start session
+              </button>
             </div>
           </section>
         ) : null}
@@ -668,17 +658,18 @@ function App() {
             </button>
           );
         })}
-      </nav>
 
-      <button
-        type="button"
-        className="options-fab"
-        aria-haspopup="dialog"
-        aria-expanded={optionsOpen}
-        onClick={() => setOptionsOpen(true)}
-      >
-        Options
-      </button>
+        <button
+          type="button"
+          className={`journey-float-button ${optionsOpen ? "active" : ""}`}
+          aria-label="Options"
+          aria-expanded={optionsOpen}
+          aria-haspopup="dialog"
+          onClick={() => setOptionsOpen(true)}
+        >
+          <OptionsIcon />
+        </button>
+      </nav>
 
       {optionsOpen ? (
         <div
