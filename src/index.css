@@ -263,6 +263,7 @@ button {
 .play-grid,
 .play-main,
 .play-side,
+.selection-stack,
 .secondary-panel,
 .history-panel,
 .stage-copy,
@@ -1033,7 +1034,7 @@ button {
   }
 
   .selection-layout {
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     align-items: start;
   }
 

@@ -81,7 +81,7 @@ const getVisitRingMeta = (dart?: DartResult) => {
 
 const journeySteps: Array<{ id: JourneyStage; label: string }> = [
   { id: "intro", label: "Intro" },
-  { id: "segment", label: "Segment" },
+  { id: "segment", label: "Setup" },
   { id: "play", label: "Practice" },
   { id: "results", label: "Results" },
 ];
@@ -333,20 +333,12 @@ function App() {
           <section className="intro-mobile">
             <section className="intro-hero-surface">
               <div className="intro-hero">
-                <div className="intro-emblem-shell" aria-hidden="true">
-                  <div className="intro-emblem">
-                    <div className="intro-emblem-board">
-                      <DartboardOutline targetSegment={session.targetSegment} />
-                    </div>
-                  </div>
-                </div>
-
                 <div className="stage-copy intro-copy-block">
                   <p className="section-label">Ready to practice</p>
                   <h1>Lock in a cleaner darts session.</h1>
                   <p className="stage-description">
-                    Pick your drill, focus on one number, and finish with a recap that tells you whether to run it
-                    back or move on.
+                    Start with a quick overview, set your drill and segment in the next step, and finish with a recap
+                    that tells you whether to run it back or move on.
                   </p>
                 </div>
               </div>
@@ -364,43 +356,13 @@ function App() {
               ))}
             </section>
 
-            <section className="card intro-board-card">
-              <div className="section-heading">
-                <div>
-                  <p className="section-label">Board picture</p>
-                  <h2>Current target: {session.targetSegment}</h2>
-                </div>
-                <span className="inline-badge">{mode.name}</span>
-              </div>
-              <p className="progress-support">
-                Keep the visual picture for {session.targetSegment} settled before the first dart leaves your hand.
-              </p>
-              <div className="intro-board-preview">
-                <DartboardOutline targetSegment={session.targetSegment} />
-              </div>
-            </section>
-
-            <section className="card intro-mode-panel">
-              <div className="section-heading">
-                <div>
-                  <p className="section-label">Mode selection</p>
-                  <h2>Choose how this block should score.</h2>
-                </div>
-              </div>
-              <ModeSelector
-                selectedMode={session.modeId}
-                targetSegment={session.targetSegment}
-                onSelect={handleModeSelect}
-              />
-            </section>
-
             <div className="intro-cta-wrap">
               <button
                 type="button"
                 className="utility-button primary intro-cta-button"
                 onClick={() => setJourneyStage("segment")}
               >
-                Start session
+                Set up session
               </button>
             </div>
           </section>
@@ -411,7 +373,7 @@ function App() {
             <div className="section-heading">
               <div>
                 <p className="section-label">Step 2</p>
-                <h1>Choose the segment for this block.</h1>
+                <h1>Choose the drill and segment for this block.</h1>
               </div>
               <button type="button" className="section-toggle" onClick={() => setJourneyStage("intro")}>
                 Back
@@ -419,42 +381,58 @@ function App() {
             </div>
 
             <div className="selection-layout">
-              <section className="card secondary-panel segment-panel">
+              <section className="card intro-mode-panel selection-mode-panel">
                 <div className="section-heading">
-                  <h2>Segment selector</h2>
+                  <div>
+                    <p className="section-label">Mode selection</p>
+                    <h2>Choose how this block should score.</h2>
+                  </div>
                 </div>
-                <label className="segment-control" htmlFor="target-segment">
-                  <span>Target segment</span>
-                  <select
-                    id="target-segment"
-                    className="segment-select"
-                    value={session.targetSegment}
-                    onChange={handleTargetSegmentChange}
-                  >
-                    {targetSegmentOptions.map((segment) => (
-                      <option key={segment} value={segment}>
-                        {segment}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <p className="progress-support">{mode.successLabel(session.targetSegment)}</p>
+                <ModeSelector
+                  selectedMode={session.modeId}
+                  targetSegment={session.targetSegment}
+                  onSelect={handleModeSelect}
+                />
               </section>
 
-              <section className="card hero-board-panel selection-preview">
-                <div className="section-heading">
-                  <h2>Current picture</h2>
-                </div>
-                <p className="progress-support">
-                  {mode.name} mode is now set to segment {session.targetSegment}.
-                </p>
-                <DartboardOutline targetSegment={session.targetSegment} />
-              </section>
+              <div className="selection-stack">
+                <section className="card secondary-panel segment-panel">
+                  <div className="section-heading">
+                    <h2>Segment selector</h2>
+                  </div>
+                  <label className="segment-control" htmlFor="target-segment">
+                    <span>Target segment</span>
+                    <select
+                      id="target-segment"
+                      className="segment-select"
+                      value={session.targetSegment}
+                      onChange={handleTargetSegmentChange}
+                    >
+                      {targetSegmentOptions.map((segment) => (
+                        <option key={segment} value={segment}>
+                          {segment}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <p className="progress-support">{mode.successLabel(session.targetSegment)}</p>
+                </section>
+
+                <section className="card hero-board-panel selection-preview">
+                  <div className="section-heading">
+                    <h2>Current picture</h2>
+                  </div>
+                  <p className="progress-support">
+                    {mode.name} mode is now set to segment {session.targetSegment}.
+                  </p>
+                  <DartboardOutline targetSegment={session.targetSegment} />
+                </section>
+              </div>
             </div>
 
             <div className="stage-actions">
               <button type="button" className="utility-button" onClick={() => setJourneyStage("intro")}>
-                Change mode
+                Back to intro
               </button>
               <button type="button" className="utility-button primary large" onClick={() => setJourneyStage("play")}>
                 Start practice
@@ -476,10 +454,10 @@ function App() {
 
               <div className="header-actions">
                 <button type="button" className="section-toggle" onClick={() => setJourneyStage("segment")}>
-                  Change segment
+                  Edit setup
                 </button>
                 <button type="button" className="section-toggle" onClick={() => setJourneyStage("intro")}>
-                  Change mode
+                  Intro
                 </button>
               </div>
             </header>
@@ -635,10 +613,10 @@ function App() {
                 Restart segment
               </button>
               <button type="button" className="utility-button large" onClick={handlePickAnotherSegment}>
-                Pick another
+                Edit setup
               </button>
               <button type="button" className="utility-button large" onClick={() => setJourneyStage("intro")}>
-                Change mode
+                Back to intro
               </button>
             </div>
           </section>
