@@ -16,11 +16,11 @@
   --shell-border: rgba(114, 40, 40, 0.28);
   --card: rgba(18, 22, 25, 0.96);
   --card-border: rgba(114, 40, 40, 0.34);
-  --card-shadow: 0 24px 60px rgba(6, 8, 8, 0.42);
-  --surface-soft: rgba(114, 40, 40, 0.12);
-  --surface-strong: rgba(114, 40, 40, 0.18);
-  --surface-selected: rgba(114, 40, 40, 0.24);
-  --surface-selected-border: rgba(114, 40, 40, 0.58);
+  --card-shadow: none;
+  --surface-soft: rgba(255, 255, 255, 0.03);
+  --surface-strong: rgba(255, 255, 255, 0.04);
+  --surface-selected: rgba(114, 40, 40, 0.34);
+  --surface-selected-border: rgba(114, 40, 40, 0.9);
   --surface-border: rgba(114, 40, 40, 0.32);
   --surface-divider: rgba(198, 187, 165, 0.12);
   --ring-inner: #121619;
@@ -30,31 +30,31 @@
   --amber: #c35d32;
   --red: #722828;
   --violet: #c6bba5;
-  --button-primary-bg: rgba(114, 40, 40, 0.34);
+  --button-primary-bg: #722828;
   --button-primary-text: #ffffff;
   --done-chip-bg: rgba(114, 40, 40, 0.22);
   --done-chip-text: #f3d9d9;
   --highlight-fill: rgba(114, 40, 40, 0.18);
-  --dart-s-bg: rgba(114, 40, 40, 0.28);
-  --dart-d-bg: rgba(195, 93, 50, 0.32);
-  --dart-t-bg: rgba(45, 71, 57, 0.28);
+  --dart-s-bg: rgba(114, 40, 40, 0.46);
+  --dart-d-bg: rgba(195, 93, 50, 0.44);
+  --dart-t-bg: rgba(45, 71, 57, 0.42);
   --dart-other-bg: rgba(198, 187, 165, 0.14);
   --dart-miss-bg: rgba(18, 22, 25, 0.82);
-  --dart-advance-bg: rgba(114, 40, 40, 0.22);
+  --dart-advance-bg: rgba(114, 40, 40, 0.3);
   --overlay: rgba(5, 8, 8, 0.78);
   --intro-hero-surface: transparent;
   --intro-hero-border: transparent;
   --intro-hero-ink: var(--ink);
   --intro-hero-muted: var(--ink-soft);
-  --intro-card-surface: rgba(18, 22, 25, 0.92);
+  --intro-card-surface: rgba(255, 255, 255, 0.02);
   --intro-card-border: rgba(114, 40, 40, 0.3);
-  --intro-preview-surface: rgba(114, 40, 40, 0.12);
+  --intro-preview-surface: rgba(255, 255, 255, 0.03);
   --intro-heading-ink: var(--ink);
-  --intro-icon-bg: rgba(114, 40, 40, 0.2);
+  --intro-icon-bg: rgba(114, 40, 40, 0.18);
   --intro-icon-accent: #722828;
   --intro-icon-core: #ffffff;
   --intro-preview-ink: rgba(198, 187, 165, 0.74);
-  --intro-mode-card-bg: rgba(114, 40, 40, 0.14);
+  --intro-mode-card-bg: rgba(255, 255, 255, 0.03);
   --intro-mode-card-border: rgba(114, 40, 40, 0.24);
   --intro-mode-card-selected-bg: rgba(114, 40, 40, 0.26);
   --intro-mode-card-selected-border: rgba(114, 40, 40, 0.58);
@@ -63,14 +63,14 @@
   --intro-cta-bg: #722828;
   --intro-cta-text: #ffffff;
   --intro-emblem-shell-bg: #722828;
-  --intro-emblem-shadow: 0 14px 28px rgba(114, 40, 40, 0.22);
+  --intro-emblem-shadow: none;
   --intro-emblem-inner-bg: rgba(18, 22, 25, 0.96);
   --intro-emblem-board-ink: rgba(198, 187, 165, 0.74);
   --float-surface: rgba(18, 22, 25, 0.94);
   --float-icon: #c6bba5;
-  --float-active-surface: rgba(114, 40, 40, 0.28);
+  --float-active-surface: #722828;
   --float-active-icon: #ffffff;
-  --float-shadow: 0 20px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --float-shadow: none;
   --accent-primary: #722828;
   --accent-secondary: #2d4739;
   --accent-warm: #c35d32;
@@ -642,12 +642,12 @@ button {
 }
 
 .progress-ring-visit {
-  width: 78px;
-  height: 78px;
+  width: 72px;
+  height: 72px;
 }
 
 .progress-ring-visit .progress-ring-inner strong {
-  font-size: 1.05rem;
+  font-size: 1rem;
 }
 
 .progress-card {
@@ -683,8 +683,6 @@ button {
 .journey-float-button {
   border: 0;
   transition:
-    transform 150ms ease,
-    box-shadow 150ms ease,
     background 150ms ease,
     border-color 150ms ease,
     color 150ms ease,
@@ -723,26 +721,32 @@ button {
 
 .dart-s {
   background: var(--dart-s-bg);
+  border-color: rgba(114, 40, 40, 0.72);
 }
 
 .dart-d {
   background: var(--dart-d-bg);
+  border-color: rgba(195, 93, 50, 0.72);
 }
 
 .dart-t {
   background: var(--dart-t-bg);
+  border-color: rgba(45, 71, 57, 0.72);
 }
 
 .dart-other {
   background: var(--dart-other-bg);
+  border-color: rgba(198, 187, 165, 0.2);
 }
 
 .dart-miss {
   background: var(--dart-miss-bg);
+  border-color: rgba(198, 187, 165, 0.14);
 }
 
 .dart-advance {
   background: var(--dart-advance-bg);
+  border-color: rgba(114, 40, 40, 0.56);
 }
 
 .dart-button:disabled,
@@ -752,20 +756,24 @@ button {
 }
 
 .visit-stage {
-  padding: 1rem;
+  padding: 0.85rem 0.85rem 0.8rem;
+  gap: 0.75rem;
 }
 
 .visit-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
 }
 
 .visit-slot {
-  padding: 0.65rem 0.45rem;
-  border-radius: 22px;
+  min-height: 112px;
+  padding: 0.45rem 0.35rem;
+  border-radius: 20px;
   background: var(--surface-strong);
   border: 1px solid var(--ring-border);
   display: grid;
   justify-items: center;
+  align-items: center;
 }
 
 .action-row {
@@ -823,6 +831,7 @@ button {
 .utility-button.primary {
   background: var(--button-primary-bg);
   color: var(--button-primary-text);
+  border-color: rgba(114, 40, 40, 0.9);
 }
 
 .utility-button.large {
@@ -1000,24 +1009,6 @@ button {
 
 .options-section {
   padding-top: 0.2rem;
-}
-
-.dart-button:hover,
-.mode-card:hover,
-.utility-button:hover,
-.section-toggle:hover,
-.theme-button:hover,
-.journey-float-button:hover {
-  transform: translateY(-1px);
-}
-
-.dart-button:active,
-.mode-card:active,
-.utility-button:active,
-.section-toggle:active,
-.theme-button:active,
-.journey-float-button:active {
-  transform: translateY(1px);
 }
 
 @media (min-width: 720px) {
