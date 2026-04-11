@@ -1,47 +1,59 @@
 # Twenty Lock
 
-Twenty Lock is a lightweight web-based darts training game focused on one job: building consistency in the 20 segment. Each visit is three darts, and the app rewards grouped hits in the 20 bed, streaks of successful visits, and repeatable practice habits rather than match-style scoring.
+Twenty Lock is a lightweight web-based darts training game focused on building consistency on a chosen board segment. Each visit is three darts, and the app rewards grouped hits, successful streaks, and repeatable practice habits rather than match-style scoring.
 
 ## What the game does
 
+- Guides the player through an intro, segment selection, practice, and results flow
 - Lets you record three darts per visit using fast tap targets
 - Tracks score, current streak, best streak, visit count, and recent history
 - Measures qualifying-hit accuracy, visit success rate, and average points per visit
 - Saves the current session and personal best streak in `localStorage`
 - Supports multiple rule presets for different practice goals
+- Includes a floating options panel for theme selection
 
 ## Game modes
 
 ### Standard
-- `S20`, `D20`, and `T20` all count
+- Singles, doubles, and trebles on the selected segment all count
 - 2 qualifying hits in a visit = success and `+1`
 - 3 qualifying hits = perfect visit and `+3`
 - Every 3rd successful streak adds `+1` bonus
 
 ### Strict
-- Only `D20` and `T20` count
+- Only singles and trebles on the selected segment count
 - 2 qualifying hits = success and `+1`
 - 3 qualifying hits = perfect visit and `+3`
 - Every 3rd successful streak adds `+1` bonus
 
 ### Precision
-- Requires at least one `T20` plus one other 20 hit
-- 2 qualifying hits with a `T20` = success and `+1`
-- 3 qualifying hits with a `T20` = perfect visit and `+3`
+- Requires at least one treble plus one other hit on the selected segment
+- 2 qualifying hits with a treble = success and `+1`
+- 3 qualifying hits with a treble = perfect visit and `+3`
 - Every 3rd successful streak adds `+1` bonus
 
 ### Endurance
 - Uses the Standard hit logic
-- Runs as a focused 12-visit block
+- Runs as a focused 10-visit block
+- Ends immediately if a miss is recorded during the visit
 - Tracks score and best streak across the block
+
+## User journey
+
+- Start on an intro screen with the current mode selection and board picture
+- Choose the target segment on a dedicated selection step
+- Record the session from the main practice screen with summary, visit slots, controls, progress, and history
+- Finish on a results screen with the session stats and quick restart actions
+- Open the bottom-right options button to change the app theme
 
 ## Input flow
 
-- Tap one button per dart: `S20`, `D20`, `T20`, `Other`, or `Miss`
+- Tap one button per dart: `Single`, `Double`, `Treble`, or `Miss`
+- Use `Advance` to complete the rest of a partial visit as off-target darts
 - After the third dart, the visit is scored automatically
 - Use undo to remove the last dart entered or revert the most recent visit
-- Use reset game to clear the current mode while keeping your personal best
-- Use new session to clear persisted session data and start fresh
+- Use reset to restart the current segment while keeping your personal best
+- Use new session to clear persisted session data and return to the start
 
 ## Run locally
 
@@ -74,9 +86,9 @@ npm run preview
 ```text
 src/
   components/
+    DartboardOutline.tsx
     DartPad.tsx
     ModeSelector.tsx
-    StatCard.tsx
     VisitHistory.tsx
   lib/
     gameEngine.ts
